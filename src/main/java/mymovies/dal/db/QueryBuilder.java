@@ -225,10 +225,13 @@ public class QueryBuilder {
     }
 
     public boolean save() {
+        this.get = false;
+        this.delete = false;
+        this.update = false;
         this.insert = true;
+
         String sql = build();
-        System.out.println(parameters);
-        System.out.println(sql);
+
         try {
             Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -247,9 +250,12 @@ public class QueryBuilder {
     }
 
     public ResultSet get() {
+        this.insert = false;
+        this.update = false;
+        this.delete = false;
         this.get = true;
         String sql = build();
-        System.out.println(sql);
+
         try {
             Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -268,11 +274,14 @@ public class QueryBuilder {
     }
 
     public boolean update() {
+        this.insert = false;
+        this.get = false;
+        this.delete = false;
         this.update = true;
         this.set("updated_at", LocalDateTime.now());
 
         String sql = build();
-        System.out.println(sql);
+
         try {
             Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -291,6 +300,9 @@ public class QueryBuilder {
     }
 
     public boolean delete() {
+        this.insert = false;
+        this.update = false;
+        this.get = false;
         this.delete = true;
 
         String sql = build();
@@ -321,5 +333,6 @@ public class QueryBuilder {
         orderByClause = "";
         top = null;
         unionClauses.clear();
+        insertColumnsPlaceholders.clear();
     }
 }
