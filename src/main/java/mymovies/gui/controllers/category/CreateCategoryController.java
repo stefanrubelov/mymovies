@@ -35,5 +35,6 @@ public class CreateCategoryController {
         } else {
             errorMessageLbl.setText("This category already exists");
         }
+        categoryNameInput.setText("");
     }
 }

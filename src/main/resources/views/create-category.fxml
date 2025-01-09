@@ -27,9 +27,10 @@
                   <TextField fx:id="categoryNameInput" alignment="CENTER" promptText="Enter the category name" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0">
+            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="20.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#save" text="Save" />
+                  <Button layoutX="290.0" layoutY="22.0" mnemonicParsing="false" onAction="#save" text="Save and return" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0">
