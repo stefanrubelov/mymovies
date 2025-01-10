@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<?import javafx.scene.control.ListView?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.Homepage">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.MovieController">
    <children>
       <Label layoutX="272.0" layoutY="171.0" text="Hello world" />
-      <ListView fx:id="movieListView" prefHeight="450.0" prefWidth="550.0" />
+      <ListView fx:id="movieListView" layoutX="158.0" layoutY="23.0" prefHeight="363.0" prefWidth="375.0" />
+      <ComboBox fx:id="categoryComboBox" layoutY="42.0" onAction="#onCategorySelected" prefHeight="36.0" prefWidth="145.0" />
    </children>
 </AnchorPane>
