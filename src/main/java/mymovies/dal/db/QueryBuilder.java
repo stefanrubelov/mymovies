@@ -1,5 +1,6 @@
 package mymovies.dal.db;
 
+import mymovies.BE.Movies;
 import mymovies.dal.db.connection.DBConnection;
 
 import java.sql.Connection;
@@ -321,5 +322,34 @@ public class QueryBuilder {
         orderByClause = "";
         top = null;
         unionClauses.clear();
+    }
+
+    public List<Movies> fetchMoviesByCategory(String category) {
+        List<Movies> movies = new ArrayList<>();
+        QueryBuilder queryBuilder = new QueryBuilder();
+
+        try (ResultSet rs = queryBuilder
+                .select("m.*")
+                .from("movies m")
+                .innerJoin("category_movie cm", "m.id = cm.movie_id")
+                .innerJoin("categories c", "c.id = cm.category_id")
+                .where ("c.name", "=", category)
+                .get()){
+
+            while (rs != null && rs.next()){
+                int id = rs.getInt("id");
+                String name =rs.getString("name");
+                double rating =rs.getDouble("rating");
+                String fileLink =rs.getString("file_link");
+                LocalDateTime lastView =rs.getTimestamp("last_view").toLocalDateTime();
+                LocalDateTime createdAt =rs.getTimestamp("created_at").toLocalDateTime();
+                LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
+
+                movies.add(new Movies(id, name, rating, fileLink, lastView, createdAt, updatedAt));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
     }
 }

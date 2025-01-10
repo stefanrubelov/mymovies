@@ -4,8 +4,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
+<?import javafx.scene.control.ListView?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.Homepage">
    <children>
       <Label layoutX="272.0" layoutY="171.0" text="Hello world" />
+      <ListView fx:id="movieListView" prefHeight="450.0" prefWidth="550.0" />
    </children>
 </AnchorPane>
