@@ -3,12 +3,18 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.MovieController">
    <children>
       <Label layoutX="272.0" layoutY="171.0" text="Hello world" />
-      <ListView fx:id="movieListView" layoutX="158.0" layoutY="23.0" prefHeight="363.0" prefWidth="375.0" />
-      <ComboBox fx:id="categoryComboBox" layoutY="42.0" onAction="#onCategorySelected" prefHeight="36.0" prefWidth="145.0" />
+      <ListView fx:id="movieListView" layoutX="179.0" layoutY="23.0" prefHeight="358.0" prefWidth="354.0" />
+      <ComboBox fx:id="categoryComboBox" layoutX="14.0" layoutY="341.0" onAction="#onCategorySelected" prefHeight="36.0" prefWidth="145.0" />
+      <TextField fx:id="searchTitle" layoutX="20.0" layoutY="23.0" onKeyReleased="#onSearchKeyReleased" promptText="search title" />
+      <Slider fx:id="ratingSlider" layoutX="25.0" layoutY="173.0" majorTickUnit="1.0" max="10.0" minorTickCount="0" onMouseReleased="#onRatingSliderChanged" showTickMarks="true" />
+      <Label layoutX="25.0" layoutY="148.0" text="IMDB" />
+      <Label fx:id="ratingLabel" layoutX="143.0" layoutY="148.0" text="5.0" />
    </children>
 </AnchorPane>
