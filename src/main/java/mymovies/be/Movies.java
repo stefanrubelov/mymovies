@@ -12,6 +12,7 @@ public class Movies {
     private LocalDateTime updatedAt;
     private double personalRating;
 
+    //Constructor
     public Movies(int id, String name, double rating, String fileLink, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
         this.id = id;
         this.name = name;
