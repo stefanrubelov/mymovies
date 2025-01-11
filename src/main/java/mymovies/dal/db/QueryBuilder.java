@@ -1,5 +1,6 @@
 package mymovies.dal.db;
 
+import mymovies.BE.Movies;
 import mymovies.dal.db.connection.DBConnection;
 
 import java.sql.Connection;
