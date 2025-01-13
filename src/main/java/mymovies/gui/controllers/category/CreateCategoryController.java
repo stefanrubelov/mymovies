@@ -3,7 +3,7 @@ package mymovies.gui.controllers.category;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import mymovies.BE.Category;
+import mymovies.be.Category;
 import mymovies.bll.CategoryManager;
 
 public class CreateCategoryController {

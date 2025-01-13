@@ -1,6 +1,6 @@
 package mymovies.bll;
 
-import mymovies.BE.Category;
+import mymovies.be.Category;
 import mymovies.dal.CategoryRepository;
 
 import java.util.List;
@@ -27,6 +27,11 @@ public class CategoryManager {
         name = prepareName(name);
         Category category = new Category(name);
         categoryRepository.create(category);
+    }
+
+    public void removeCategory(int id) {
+        Category category = new Category(id);
+        categoryRepository.delete(category);
     }
 
     public String prepareName(String name){
