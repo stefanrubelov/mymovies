@@ -29,6 +29,11 @@ public class CategoryManager {
         categoryRepository.create(category);
     }
 
+    public void removeCategory(int id) {
+        Category category = new Category(id);
+        categoryRepository.delete(category);
+    }
+
     public String prepareName(String name){
         if (name == null || name.isEmpty()) {
             return "";

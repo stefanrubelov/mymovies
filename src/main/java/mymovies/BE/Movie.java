@@ -1,8 +1,8 @@
-package mymovies.BE;
+package mymovies.be;
 
 import java.time.LocalDateTime;
 
-public class Movies {
+public class Movie {
     private int id;
     private String name;
     private double rating;
@@ -12,8 +12,7 @@ public class Movies {
     private LocalDateTime updatedAt;
     private double personalRating;
 
-    //Constructor
-    public Movies(int id, String name, double rating, String fileLink, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
+    public Movie(int id, String name, double rating, String fileLink, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
         this.id = id;
         this.name = name;
         this.rating = rating;
