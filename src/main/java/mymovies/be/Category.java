@@ -1,4 +1,4 @@
-package mymovies.be;
+package mymovies.BE;
 
 public class Category {
     private int id;

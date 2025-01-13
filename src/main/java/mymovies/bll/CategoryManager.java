@@ -1,6 +1,6 @@
 package mymovies.bll;
 
-import mymovies.be.Category;
+import mymovies.BE.Category;
 import mymovies.dal.CategoryRepository;
 
 import java.util.List;
