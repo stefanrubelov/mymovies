@@ -3,11 +3,18 @@ package mymovies.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import mymovies.be.Movie;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import mymovies.dal.db.QueryBuilder;
 
+import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -34,6 +41,7 @@ public class MovieController {
     @FXML
     public void initialize() {
         loadCategories(); //load categories in the ComboBox
+        setupMovieCellFactory(); // to add stars to ratings
         List<Movie> allMovies = fetchMoviesWithRatings();
         displayMoviesWithRatings(allMovies); //
     }
@@ -237,5 +245,49 @@ public class MovieController {
             e.printStackTrace();
         }
         return movies;
+    }
+    //Modify the ListView with a personalized cell
+    private void setupMovieCellFactory(){
+        movieListView.setCellFactory(listView ->new ListCell<>(){
+            @Override
+            protected void updateItem(String formattedMovie, boolean empty) {
+                super.updateItem(formattedMovie, empty);
+                if (empty || formattedMovie == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    HBox hbox = new HBox(10);
+
+                    String[] parts = formattedMovie.split(" - IMDB:");
+                    String titleText = parts[0];
+                    double rating = Double.parseDouble(parts[1].split("\\|")[0].trim());
+
+                    Text title = new Text(titleText);
+
+
+                    HBox starsBox = new HBox(2); //space between stars
+                    int starsCount = (int) Math.floor(rating); // number of full stars
+                    int maxStars = 5;
+
+                    Image star = new Image ("file:resources/star.png");
+
+                    for (int i = 0; i < maxStars; i++) {
+                        ImageView starView = null;
+                        if (i < starsCount) {
+                            starView = new ImageView(star);
+                        } else {
+
+
+                        }
+                        starView.setFitHeight(16);
+                        starView.setFitWidth(16);
+                        starsBox.getChildren().add(starView);
+                    }
+
+                    hbox.getChildren().addAll(title, starsBox);
+                    setGraphic(hbox);
+                }
+            }
+        });
     }
 }
