@@ -4,10 +4,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import mymovies.be.Movies;
+import javafx.scene.layout.AnchorPane;
+import mymovies.be.Movie;
 import mymovies.dal.db.QueryBuilder;
 
 import java.sql.ResultSet;
@@ -19,58 +23,98 @@ import java.util.List;
 public class MainPageController {
 
     @FXML
-    private TableView<Movies> movieTableView;
+    private TableView<Movie> movieTableView;
+    @FXML
+    private TableColumn<Movie, Integer> idColumn;
+    @FXML
+    private TableColumn<Movie, String> nameColumn;
+    @FXML
+    private TableColumn<Movie, Double> ratingColumn;
+    @FXML
+    private TableColumn<Movie, String> filePathColumn;
+    @FXML
+    private TableColumn<Movie, LocalDateTime> lastViewColumn;
+    @FXML
+    private TableColumn<Movie, LocalDateTime> createdAtColumn;
+    @FXML
+    private TableColumn<Movie, LocalDateTime> updatedAtColumn;
+    @FXML
+    private TableColumn<Movie, Double> personalRatingColumn;
+    @FXML
+    private Button addMovieBtn;
+    @FXML
+    private Button removeMovieBtn;
+    @FXML
+    private Button addCategoryBtn;
+    @FXML
+    private Button removeCategoryBtn;
+    @FXML
+    private Pagination pagination;
 
-    @FXML
-    private TableColumn<Movies, Integer> idColumn;
-    @FXML
-    private TableColumn<Movies, String> nameColumn;
-    @FXML
-    private TableColumn<Movies, Double> ratingColumn;
-    @FXML
-    private TableColumn<Movies, String> fileLinkColumn;
-    @FXML
-    private TableColumn<Movies, LocalDateTime> lastViewColumn;
-    @FXML
-    private TableColumn<Movies, LocalDateTime> createdAtColumn;
-    @FXML
-    private TableColumn<Movies, LocalDateTime> updatedAtColumn;
-    @FXML
-    private TableColumn<Movies, Double> personalRatingColumn;
+    private static final int ROWS_PER_PAGE = 5;
+    private ObservableList<Movie> movieList = FXCollections.observableArrayList();
+
 
     @FXML
     public void initialize() {
-        configureTableView(); // Set up the TableView columns
-        loadMoviesIntoTableView(); // Load data into the TableView
+        configureTableView();
+        loadMoviesIntoTableView();
     }
 
     private void configureTableView() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
-        fileLinkColumn.setCellValueFactory(new PropertyValueFactory<>("fileLink"));
+        filePathColumn.setCellValueFactory(new PropertyValueFactory<>("filePath"));
         lastViewColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getLastView()));
         createdAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCreatedAt()));
         updatedAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getUpdatedAt()));
         personalRatingColumn.setCellValueFactory(new PropertyValueFactory<>("personalRating"));
+
     }
+
+
+    private void configurePagination() {
+        int totalPages = (int) Math.ceil((double) movieList.size() / ROWS_PER_PAGE);
+        pagination.setPageCount(totalPages);
+
+        pagination.setPageFactory(pageIndex -> {
+            return createPage(pageIndex);
+        });
+    }
+
+
+    private Node createPage(int pageIndex) {
+        int start = pageIndex * ROWS_PER_PAGE;
+        int end = Math.min(start + ROWS_PER_PAGE, movieList.size());
+
+        ObservableList<Movie> currentPageData = FXCollections.observableArrayList(movieList.subList(start, end));
+        movieTableView.setItems(currentPageData);
+
+        return new AnchorPane(movieTableView);
+
+    }
+
+
 
     private void loadMoviesIntoTableView() {
-        List<Movies> moviesList = fetchMovies();
-        if (moviesList.isEmpty()) {
+        List<Movie> movies = fetchMovies();
+        if (movies.isEmpty()) {
             System.out.println("No movies found in the database!");
         }
-        ObservableList<Movies> observableMovies = FXCollections.observableArrayList(moviesList);
-        movieTableView.setItems(observableMovies);
+
+        movieList.setAll(movies);
+
+        configurePagination();
     }
 
 
-    private List<Movies> fetchMovies() {
-        List<Movies> movies = new ArrayList<>();
+    private List<Movie> fetchMovies() {
+        List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
-                .select("id, name, rating, file_link, last_view, created_at, updated_at, personal_rating")
+                .select("id, name, rating, file_path, last_view, created_at, updated_at, personal_rating")
                 .from("movies")
                 .get()) {
 
@@ -78,13 +122,13 @@ public class MainPageController {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 double rating = rs.getDouble("rating");
-                String fileLink = rs.getString("file_link");
+                String filePath = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 double personalRating = rs.getDouble("personal_rating");
 
-                movies.add(new Movies(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, rating, filePath, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();

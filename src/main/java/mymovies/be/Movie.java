@@ -2,22 +2,22 @@ package mymovies.be;
 
 import java.time.LocalDateTime;
 
-public class Movies {
+public class Movie {
     private int id;
     private String name;
     private double rating;
-    private String fileLink;
+    private String filePath;
     private LocalDateTime lastView;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private double personalRating;
 
     //Constructor
-    public Movies(int id, String name, double rating, String fileLink, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
+    public Movie(int id, String name, double rating, String filePath, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
         this.id = id;
         this.name = name;
         this.rating = rating;
-        this.fileLink = fileLink;
+        this.filePath = filePath;
         this.lastView = lastView;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -36,8 +36,8 @@ public class Movies {
         return rating;
     }
 
-    public String getFileLink() {
-        return fileLink;
+    public String getFilePath() {
+        return filePath;
     }
 
     public LocalDateTime getLastView() {
