@@ -98,10 +98,10 @@ public class CategoryRepository {
                 .update();
     }
 
-    public void delete(int id) {
+    public void delete(Category category) {
         queryBuilder.
                 from("categories")
-                .where("id", "=", id)
+                .where("id", "=", category.getId())
                 .delete();
     }
 

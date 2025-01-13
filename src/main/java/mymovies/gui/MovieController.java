@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import mymovies.BE.Movies;
+import mymovies.be.Movie;
 import mymovies.dal.db.QueryBuilder;
 
 import java.sql.ResultSet;
@@ -34,12 +34,12 @@ public class MovieController {
     @FXML
     public void initialize() {
         loadCategories(); //load categories in the ComboBox
-        List<Movies> allMovies = fetchMoviesWithRatings();
+        List<Movie> allMovies = fetchMoviesWithRatings();
         displayMoviesWithRatings(allMovies); //
     }
 
-    private List<Movies> fetchMoviesWithRatings() {
-        List<Movies> movies = new ArrayList<>();
+    private List<Movie> fetchMoviesWithRatings() {
+        List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
@@ -57,7 +57,7 @@ public class MovieController {
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 double personalRating = rs.getDouble("personal_rating");
 
-                movies.add(new Movies(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,7 +65,7 @@ public class MovieController {
         return movies;
     }
 
-    private void displayMoviesWithRatings(List<Movies> movies) {
+    private void displayMoviesWithRatings(List<Movie> movies) {
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
@@ -94,8 +94,8 @@ public class MovieController {
         categoryComboBox.getItems().setAll(categories);
     }
 
-    public List<Movies> fetchMoviesByCategory(String category) {
-        List<Movies> movies = new ArrayList<>();
+    public List<Movie> fetchMoviesByCategory(String category) {
+        List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
@@ -116,7 +116,7 @@ public class MovieController {
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 double personalRating = rs.getDouble("personal_rating");
 
-                movies.add(new Movies(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,7 +126,7 @@ public class MovieController {
 
     //method to show movies in the listView by category
     public void displayMoviesByCategory(String category) {
-        List<Movies> movies = fetchMoviesByCategory(category);
+        List<Movie> movies = fetchMoviesByCategory(category);
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
@@ -154,7 +154,7 @@ public class MovieController {
     }
 
     private void searchMoviesByTitle(String title) {
-        List<Movies> movies = fetchMoviesByTitle(title);
+        List<Movie> movies = fetchMoviesByTitle(title);
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
@@ -165,8 +165,8 @@ public class MovieController {
         movieListView.getItems().setAll(formattedMovies);
     }
 
-    private List<Movies> fetchMoviesByTitle(String title) {
-        List<Movies> movies = new ArrayList<>();
+    private List<Movie> fetchMoviesByTitle(String title) {
+        List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
@@ -185,7 +185,7 @@ public class MovieController {
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 double personalRating = rs.getDouble("personal_rating");
 
-                movies.add(new Movies(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -200,7 +200,7 @@ public class MovieController {
     }
 
     private void filterMoviesByRating(double minRating) {
-        List<Movies> movies = fetchMoviesByRating(minRating);
+        List<Movie> movies = fetchMoviesByRating(minRating);
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
@@ -211,8 +211,8 @@ public class MovieController {
         movieListView.getItems().setAll(formattedMovies);
     }
 
-    private List<Movies> fetchMoviesByRating(double minRating) {
-        List<Movies> movies = new ArrayList<>();
+    private List<Movie> fetchMoviesByRating(double minRating) {
+        List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
@@ -231,7 +231,7 @@ public class MovieController {
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 double personalRating = rs.getDouble("personal_rating");
 
-                movies.add(new Movies(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();

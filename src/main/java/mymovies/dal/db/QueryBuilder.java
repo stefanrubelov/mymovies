@@ -1,6 +1,5 @@
 package mymovies.dal.db;
 
-import mymovies.BE.Movies;
 import mymovies.dal.db.connection.DBConnection;
 
 import java.sql.Connection;
@@ -42,7 +41,7 @@ public class QueryBuilder {
         }
 
         if (columns.length == 0) {
-            return this; // Do nothing if no column provided
+            return this;
         }
 
         if (columns.length == 1 && columns[0].equals("*")) {
@@ -141,14 +140,6 @@ public class QueryBuilder {
         }
 
         setClauses.add(column + " = " + valueString);
-        return this;
-    }
-
-
-    public QueryBuilder when(boolean condition, Consumer<QueryBuilder> callback) {
-        if (condition) {
-            callback.accept(this);
-        }
         return this;
     }
 

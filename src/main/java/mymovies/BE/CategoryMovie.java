@@ -1,4 +1,4 @@
-package mymovies.BE;
+package mymovies.be;
 
 import java.time.LocalDateTime;
 
