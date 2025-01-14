@@ -8,15 +8,18 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mymovies.be.Category;
+import mymovies.be.Movie;
 import mymovies.bll.CategoryManager;
+import mymovies.bll.MovieManager;
+import mymovies.utils.Validator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddMovieController {
     final private CategoryManager categoryManager = new CategoryManager();
+    final private MovieManager movieManager = new MovieManager();
 
     @FXML
     private TextField nameField;
@@ -39,6 +42,9 @@ public class AddMovieController {
     @FXML
     private Label pathLbl;
 
+    @FXML
+    private Label errorMessagesLbl;
+
     private String moviePath = null;
 
     public void initialize() {
@@ -53,10 +59,16 @@ public class AddMovieController {
     }
 
     public void save(ActionEvent actionEvent) {
+        if (this.validateFields()) {
+            List<Integer> selectedCategoryIds = getSelectedCategoryIds();
+            String name = nameField.getText();
+            Integer imdbRatingValue = imdbRating.getValue();
+            Integer personalRatingValue = personalRating.getValue();
 
-        List<Integer> selectedCategoryIds = getSelectedCategoryIds();
+            Movie movie = new Movie(name, moviePath, imdbRatingValue, personalRatingValue);
+            movieManager.addMovie(movie, selectedCategoryIds);
+        }
 
-        System.out.println(nameField.getText() + "  " + personalRating.getValue() + "  " + imdbRating.getValue() + "   " + selectedCategoryIds + "  " + moviePath);
     }
 
     public List<Integer> getSelectedCategoryIds() {
@@ -66,7 +78,7 @@ public class AddMovieController {
     }
 
     @FXML
-    private void selectFile(ActionEvent event) throws IOException {
+    private void selectFile(ActionEvent event) {
         Stage stage = (Stage) vboxContainer.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file");
@@ -82,5 +94,30 @@ public class AddMovieController {
             pathLbl.setText("No file selected");
             moviePath = null;
         }
+    }
+
+    private boolean validateFields() {
+        Validator validator = new Validator()
+                .setField("name", nameField.getText())
+                .setField("imdbRating", imdbRating.getValue())
+                .required("name", "imdbRating")
+                .numeric("imdbRating")
+                .min("name", 3)
+                .min("imdbRating", 1)
+                .max("imdbRating", 10);
+
+        if (validator.passes()) {
+            errorMessagesLbl.setText("");
+            errorMessagesLbl.setVisible(false);
+            return true;
+        } else {
+            StringBuilder errorMessages = new StringBuilder();
+            validator.getErrors().forEach((field, messages) -> {
+                messages.forEach(message -> errorMessages.append(message).append("\n"));
+            });
+            System.out.println(errorMessages.toString());
+            errorMessagesLbl.setText(errorMessages.toString());
+        }
+        return false;
     }
 }

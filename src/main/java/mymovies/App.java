@@ -12,8 +12,6 @@ import java.sql.SQLException;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println(App.class.getResource("/views/homepage.fxml"));
-
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/views/homepage.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle(Env.get("APP_NAME", "My Movies"));

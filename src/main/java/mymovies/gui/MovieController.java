@@ -51,19 +51,19 @@ public class MovieController {
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
-                .select("id, name, rating, file_link, last_view, created_at, updated_at, personal_rating")
+                .select("id, name, rating, file_path, last_view, created_at, updated_at, personal_rating")
                 .from("movies")
                 .get()) {
 
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                double rating = rs.getDouble("rating");
-                String fileLink = rs.getString("file_link");
+                int rating = rs.getInt("rating");
+                String fileLink = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                double personalRating = rs.getDouble("personal_rating");
+                int personalRating = rs.getInt("personal_rating");
 
                 movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
@@ -77,7 +77,7 @@ public class MovieController {
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
-                        movie.getRating(),
+                        movie.getImdbRating(),
                         movie.getPersonalRating()))
                 .toList();
 
@@ -117,12 +117,12 @@ public class MovieController {
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                double rating = rs.getDouble("rating");
-                String fileLink = rs.getString("file_link");
+                int rating = rs.getInt("rating");
+                String fileLink = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                double personalRating = rs.getDouble("personal_rating");
+                int personalRating = rs.getInt("personal_rating");
 
                 movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
@@ -138,7 +138,7 @@ public class MovieController {
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
-                        movie.getRating(),
+                        movie.getImdbRating(),
                         movie.getPersonalRating()))
                 .toList();
 
@@ -166,7 +166,7 @@ public class MovieController {
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
-                        movie.getRating(),
+                        movie.getImdbRating(),
                         movie.getPersonalRating()))
                 .toList();
 
@@ -186,12 +186,12 @@ public class MovieController {
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                double rating = rs.getDouble("rating");
-                String fileLink = rs.getString("file_link");
+                int rating = rs.getInt("rating");
+                String fileLink = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                double personalRating = rs.getDouble("personal_rating");
+                int personalRating = rs.getInt("personal_rating");
 
                 movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
@@ -212,7 +212,7 @@ public class MovieController {
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
-                        movie.getRating(),
+                        movie.getImdbRating(),
                         movie.getPersonalRating()))
                 .toList();
 
@@ -232,12 +232,12 @@ public class MovieController {
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                double rating = rs.getDouble("rating");
-                String fileLink = rs.getString("file_link");
+                int rating = rs.getInt("rating");
+                String fileLink = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                double personalRating = rs.getDouble("personal_rating");
+                int personalRating = rs.getInt("personal_rating");
 
                 movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }

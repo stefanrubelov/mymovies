@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class CategoryRepository {
     private QueryBuilder queryBuilder;
-    final Logger logger = Logger.getAnonymousLogger();
+    final private Logger logger = Logger.getAnonymousLogger();
 
     public CategoryRepository() {
         queryBuilder = new QueryBuilder();
@@ -99,10 +99,34 @@ public class CategoryRepository {
     }
 
     public void delete(Category category) {
-        queryBuilder.
-                from("categories")
+        queryBuilder
+                .from("categories")
                 .where("id", "=", category.getId())
                 .delete();
+    }
+
+    public List<Category> getAllByMovieId(int movieId) {
+        List<Category> categories = new ArrayList<>();
+        ResultSet resultSet = queryBuilder
+                .from("category_movie")
+                .join("categories", "category_movie.category_id = categories.id", "")
+                .select("categories.name as name, categories.id as id")
+                .where("movie_id", "=", movieId)
+                .get();
+
+        try {
+            while (resultSet.next()) {
+                Category category = mapModel(resultSet);
+
+                categories.add(category);
+            }
+
+            return categories;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+
+            return categories;
+        }
     }
 
     private Category mapModel(ResultSet resultSet) throws SQLException {
