@@ -73,6 +73,17 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder whereIn(String column, List<Object> values) {
+        if (values == null || values.isEmpty()) {
+            throw new IllegalArgumentException("The values for whereIn() cannot be null or empty.");
+        }
+
+        String placeholders = String.join(", ", Collections.nCopies(values.size(), "?"));
+        whereClauses.add(column + " IN (" + placeholders + ")");
+        parameters.addAll(values);
+        return this;
+    }
+
     public QueryBuilder join(String table, String condition, String type) {
         if (type.isEmpty() || type.equals(" ")) {
             this.joinClauses.add("JOIN " + table + " ON " + condition);
@@ -223,7 +234,7 @@ public class QueryBuilder {
         this.insert = true;
 
         String sql = build();
-
+        System.out.println(sql);
         try {
             Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -240,6 +251,43 @@ public class QueryBuilder {
             resetFields();
         }
     }
+
+    public ResultSet saveAndReturn() {
+        this.get = false;
+        this.update = false;
+        this.delete = false;
+        this.insert = true;
+
+        if (insertColumnsPlaceholders.isEmpty()) {
+            throw new IllegalStateException("Insert columns must be defined before calling saveAndReturn.");
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ").append(fromClause)
+                .append(" (").append(String.join(", ", insertColumnsPlaceholders)).append(") ")
+                .append("VALUES (").append(String.join(", ", Collections.nCopies(parameters.size(), "?"))).append("); ")
+                .append("SELECT SCOPE_IDENTITY() AS id;");
+
+        System.out.println(sql);
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+
+            for (int i = 0; i < parameters.size(); i++) {
+                preparedStatement.setObject(i + 1, parameters.get(i));
+            }
+
+            return preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQL INSERT Execution Error with SCOPE_IDENTITY(): " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } finally {
+            resetFields();
+        }
+    }
+
 
     public ResultSet get() {
         this.insert = false;

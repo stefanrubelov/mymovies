@@ -1,15 +1,29 @@
 package mymovies.bll;
 
 import mymovies.be.Category;
+import mymovies.be.Movie;
 import mymovies.dal.CategoryRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CategoryManager {
     private final CategoryRepository categoryRepository = new CategoryRepository();
 
     public List<Category> getAllCategories() {
         return this.categoryRepository.getAll();
+    }
+
+    public List<Category> getAllCategoriesByMovie(Movie movie) {
+        return this.categoryRepository.getAllByMovieId(movie.getId());
+    }
+
+    public String getAllCategoriesByMovieToString(Movie movie) {
+        List<Category> categoriesList = this.categoryRepository.getAllByMovieId(movie.getId());
+
+        return categoriesList.stream()
+                .map(Category::getName)
+                .collect(Collectors.joining(", "));
     }
 
     public Category getCategoryById(int id) {
@@ -34,7 +48,7 @@ public class CategoryManager {
         categoryRepository.delete(category);
     }
 
-    public String prepareName(String name){
+    public String prepareName(String name) {
         if (name == null || name.isEmpty()) {
             return "";
         }
