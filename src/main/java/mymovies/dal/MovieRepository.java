@@ -55,6 +55,17 @@ public class MovieRepository {
         return newMovie;
     }
 
+    public void update(Movie movie) {
+        queryBuilder
+                .table("movies")
+                .set("name", movie.getName())
+                .set("imdb_rating", movie.getImdbRating())
+                .set("file_path", movie.getFilePath())
+                .set("personal_rating", movie.getPersonalRating())
+                .where("id", "=", movie.getId())
+                .update();
+    }
+
     public void delete(int id) {
         queryBuilder
                 .table("movies")
@@ -67,6 +78,13 @@ public class MovieRepository {
                 .insert("movie_id", movie.getId())
                 .insert("category_id", category_id)
                 .save();
+    }
+
+    public void removeAllCategories(Movie movie) {
+        queryBuilder
+                .table("category_movie")
+                .where("movie_id", "=", movie.getId())
+                .delete();
     }
 
     private Movie mapModel(ResultSet resultSet, int id) throws SQLException {

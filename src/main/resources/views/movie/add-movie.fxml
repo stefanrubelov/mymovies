@@ -27,7 +27,7 @@
 
         <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="600.0" spacing="10">
             <Label text="Name:" />
-            <TextField fx:id="nameField" promptText="Enter movie name" />
+            <TextField fx:id="nameField" prefHeight="26.0" prefWidth="450.0" promptText="Enter movie name" />
             <VBox.margin>
                 <Insets />
             </VBox.margin>

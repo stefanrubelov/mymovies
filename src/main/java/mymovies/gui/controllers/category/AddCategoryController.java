@@ -6,7 +6,7 @@ import javafx.scene.control.TextField;
 import mymovies.be.Category;
 import mymovies.bll.CategoryManager;
 
-public class CreateCategoryController {
+public class AddCategoryController {
     final private CategoryManager categoryManager = new CategoryManager();
 
     @FXML

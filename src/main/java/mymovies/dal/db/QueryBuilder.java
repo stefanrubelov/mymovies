@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class QueryBuilder {
     private String selectClause = "";
@@ -123,7 +122,9 @@ public class QueryBuilder {
     public QueryBuilder set(String column, Object value) {
         String valueString;
 
-        if (value instanceof String) {
+        if (value == null) {
+            valueString = "NULL";
+        } else if (value instanceof String) {
             valueString = "'" + value + "'";
         } else if (value instanceof LocalDateTime) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -234,7 +235,7 @@ public class QueryBuilder {
         this.insert = true;
 
         String sql = build();
-        System.out.println(sql);
+
         try {
             Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -365,11 +366,12 @@ public class QueryBuilder {
     }
 
     public void resetFields() {
-        selectClause = "*";
+        selectClause = "";
         fromClause = "";
         whereClauses.clear();
         parameters.clear();
         joinClauses.clear();
+        setClauses.clear();
         orderByClause = "";
         top = null;
         unionClauses.clear();
