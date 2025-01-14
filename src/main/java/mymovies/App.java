@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mymovies.utils.Env;
 
+import javax.swing.*;
 import java.sql.SQLException;
 
 public class App extends Application {
@@ -20,6 +21,11 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
+        // Display a pop-up message after the stage is shown
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(null, "Hello, please delete movies rated 6.0 or below and those not opened in 2 years.", "Warning", JOptionPane.ERROR_MESSAGE);
+        });
+
         DBConnection db = new DBConnection();
         try {
             db.testConnection();
@@ -27,5 +33,9 @@ public class App extends Application {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
