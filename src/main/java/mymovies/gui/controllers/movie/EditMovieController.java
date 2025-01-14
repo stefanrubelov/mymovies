@@ -3,7 +3,10 @@ package mymovies.gui.controllers.movie;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -17,9 +20,10 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AddMovieController {
-    final private CategoryManager categoryManager = new CategoryManager();
-    final private MovieManager movieManager = new MovieManager();
+public class EditMovieController {
+    private Movie movie;
+    private final MovieManager movieManager = new MovieManager();
+    private final CategoryManager categoryManager = new CategoryManager();
 
     @FXML
     private TextField nameField;
@@ -31,10 +35,7 @@ public class AddMovieController {
     private ComboBox<Integer> imdbRating;
 
     @FXML
-    private ListView<Category> category;
-
-    @FXML
-    private Button uploadFileBtn;
+    private ListView<Category> categorySelector;
 
     @FXML
     private VBox vboxContainer;
@@ -51,29 +52,41 @@ public class AddMovieController {
         fetchCategories();
     }
 
-    public void fetchCategories() {
-        List<Category> categories = categoryManager.getAllCategories();
-
-        category.setItems(FXCollections.observableArrayList(categories));
-        category.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
-    }
-
-    public void save(ActionEvent actionEvent) {
-        if (this.validateFields()) {
+    public void update(ActionEvent actionEvent) {
+        if (validateFields()) {
             List<Integer> selectedCategoryIds = getSelectedCategoryIds();
+
             String name = nameField.getText();
             Integer imdbRatingValue = imdbRating.getValue();
             Integer personalRatingValue = personalRating.getValue();
 
-            Movie movie = new Movie(name, moviePath, imdbRatingValue, personalRatingValue);
-            movieManager.addMovie(movie, selectedCategoryIds);
+            movie.setName(name);
+            movie.setImdbRating(imdbRatingValue);
+            movie.setPersonalRating(personalRatingValue);
+            movie.setFilePath(moviePath);
+            movieManager.updateMovie(movie, selectedCategoryIds);
         }
+        //TODO redirect to homepage
     }
 
-    public List<Integer> getSelectedCategoryIds() {
-        return category.getSelectionModel().getSelectedItems().stream()
-                .map(Category::getId)
-                .collect(Collectors.toList());
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+        setFields();
+    }
+
+    private void setFields() {
+        nameField.setText(movie.getName());
+        personalRating.setValue(movie.getPersonalRating());
+        imdbRating.setValue(movie.getImdbRating());
+        moviePath = movie.getFilePath();
+        List<Category> categories = categoryManager.getAllCategoriesByMovie(movie);
+
+        for (Category category : categories) {
+            int index = categorySelector.getItems().indexOf(category);
+            categorySelector.getSelectionModel().select(index);
+        }
+
+        pathLbl.setText("You have selected the following file : " + moviePath);
     }
 
     @FXML
@@ -93,6 +106,19 @@ public class AddMovieController {
             pathLbl.setText("No file selected");
             moviePath = null;
         }
+    }
+
+    public void fetchCategories() {
+        List<Category> categories = categoryManager.getAllCategories();
+
+        categorySelector.setItems(FXCollections.observableArrayList(categories));
+        categorySelector.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
+    }
+
+    public List<Integer> getSelectedCategoryIds() {
+        return categorySelector.getSelectionModel().getSelectedItems().stream()
+                .map(Category::getId)
+                .collect(Collectors.toList());
     }
 
     private boolean validateFields() {

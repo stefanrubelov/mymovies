@@ -20,14 +20,28 @@ public class MovieManager {
         attachCategoriesToMovie(newMovie, categoryIds);
     }
 
+    public void updateMovie(Movie movie, List<Integer> categoryIds) {
+        movieRepository.update(movie);
+
+        updateCategoriesToMovie(movie, categoryIds);
+    }
+
+    public void deleteMovie(Movie movie) {
+        movieRepository.delete(movie.getId());
+    }
+
     public void attachCategoriesToMovie(Movie movie, List<Integer> categoryIds) {
         for (Integer categoryId : categoryIds) {
             movieRepository.addCategory(movie, categoryId);
         }
     }
 
-    public void deleteMovie(Movie movie) {
-        movieRepository.delete(movie.getId());
+    public void updateCategoriesToMovie(Movie movie, List<Integer> categoryIds) {
+        movieRepository.removeAllCategories(movie);
+
+        for (Integer categoryId : categoryIds) {
+            movieRepository.addCategory(movie, categoryId);
+        }
     }
 
     public void playMovie(Movie movie) {

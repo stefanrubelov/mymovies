@@ -1,5 +1,9 @@
 package mymovies.utils;
 
+import mymovies.dal.db.QueryBuilder;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +65,28 @@ public class Validator {
                 if (((Number) value).doubleValue() > max) {
                     addError(field, "The " + field + " field must not exceed " + max + ".");
                 }
+            }
+        }
+        return this;
+    }
+
+    public Validator unique(String table, String column, String field, Object colVal) {
+        Object value = fields.get(field);
+        QueryBuilder queryBuilder = new QueryBuilder();
+
+        if (value != null) {
+            ResultSet resultSet = queryBuilder
+                    .table(table)
+                    .select("*")
+                    .where(column, "=", colVal)
+                    .get();
+
+            try {
+                if (resultSet.isBeforeFirst()) {
+                    addError(field, colVal + " already exists in the " + table + " table.");
+                }
+            } catch (SQLException e) {
+
             }
         }
         return this;

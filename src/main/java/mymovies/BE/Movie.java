@@ -70,4 +70,26 @@ public class Movie {
     public Integer getPersonalRating() {
         return personalRating;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImdbRating(Integer imdbRating) {
+        this.imdbRating = imdbRating;
+    }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setLastView(LocalDateTime lastView) {
+        this.lastView = lastView;
+    }
+    public void setPersonalRating(Integer personalRating) {
+        this.personalRating = personalRating;
+    }
 }

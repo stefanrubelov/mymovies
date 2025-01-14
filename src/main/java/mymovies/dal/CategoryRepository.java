@@ -41,12 +41,12 @@ public class CategoryRepository {
         }
     }
 
-    public Category findById(Category category) {
+    public Category findById(int categoryId) {
         Category result = null;
         ResultSet resultSet = queryBuilder
                 .from("categories")
                 .select("*")
-                .where("id", "=", category.getId())
+                .where("id", "=", categoryId)
                 .get();
 
         try {
