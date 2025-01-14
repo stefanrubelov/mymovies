@@ -3,8 +3,8 @@ package mymovies.gui.controllers.category;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import mymovies.be.Category;
 import mymovies.bll.CategoryManager;
+import mymovies.utils.Validator;
 
 public class AddCategoryController {
     final private CategoryManager categoryManager = new CategoryManager();
@@ -18,23 +18,40 @@ public class AddCategoryController {
     @FXML
     public void save() {
         this.saveCategory();
+        //TODO redirect
     }
 
-    public void saveAndReturn(){
+    public void saveAndReturn() {
         this.saveCategory();
+        //TODO redirect to homepage?
     }
 
-    public void saveCategory(){
-        String categoryName = categoryNameInput.getText();
+    public void saveCategory() {
+        if (validateFields()) {
+            String categoryName = categoryNameInput.getText();
 
-        Category existingCategory = categoryManager.getCategoryByName(categoryName);
-
-        if (existingCategory == null) {
             categoryManager.addCategory(categoryName);
-            errorMessageLbl.setText("");
-        } else {
-            errorMessageLbl.setText("This category already exists");
         }
-        categoryNameInput.setText("");
+    }
+
+    private boolean validateFields() {
+        Validator validator = new Validator()
+                .setField("name", categoryNameInput.getText())
+                .required("name")
+                .unique("categories", "name", "name", categoryNameInput.getText());
+
+        if (validator.passes()) {
+            errorMessageLbl.setText("");
+            errorMessageLbl.setVisible(false);
+            return true;
+        } else {
+            StringBuilder errorMessages = new StringBuilder();
+            validator.getErrors().forEach((field, messages) -> {
+                messages.forEach(message -> errorMessages.append(message).append("\n"));
+            });
+            System.out.println(errorMessages.toString());
+            errorMessageLbl.setText(errorMessages.toString());
+        }
+        return false;
     }
 }
