@@ -29,7 +29,7 @@ public class MainPageController {
     @FXML
     private TableColumn<Movie, String> nameColumn;
     @FXML
-    private TableColumn<Movie, Double> ratingColumn;
+    private TableColumn<Movie, Double> imdbRatingColumn;
     @FXML
     private TableColumn<Movie, String> filePathColumn;
     @FXML
@@ -64,7 +64,7 @@ public class MainPageController {
     private void configureTableView() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        ratingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        imdbRatingColumn.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
         filePathColumn.setCellValueFactory(new PropertyValueFactory<>("filePath"));
         lastViewColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getLastView()));
         createdAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCreatedAt()));
@@ -114,21 +114,21 @@ public class MainPageController {
         QueryBuilder queryBuilder = new QueryBuilder();
 
         try (ResultSet rs = queryBuilder
-                .select("id, name, rating, file_path, last_view, created_at, updated_at, personal_rating")
+                .select("id, name, imdb_rating, file_path, last_view, created_at, updated_at, personal_rating")
                 .from("movies")
                 .get()) {
 
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                double rating = rs.getDouble("rating");
+                double imdbRating = rs.getDouble("imdb_rating");
                 String filePath = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 double personalRating = rs.getDouble("personal_rating");
 
-                movies.add(new Movie(id, name, rating, filePath, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, imdbRating, filePath, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();

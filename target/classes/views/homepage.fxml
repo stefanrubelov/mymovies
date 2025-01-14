@@ -22,7 +22,7 @@
             <columns>
                <TableColumn fx:id="idColumn" text="ID" />
                <TableColumn fx:id="nameColumn" text="Name" />
-               <TableColumn fx:id="ratingColumn" text="Rating" />
+               <TableColumn fx:id="imdbRatingColumn" text="IMDB rating" />
                <TableColumn fx:id="filePathColumn" text="File Path" />
                <TableColumn fx:id="lastViewColumn" text="Last View" />
                <TableColumn fx:id="createdAtColumn" text="Created At" />

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Movie {
     private int id;
     private String name;
-    private double rating;
+    private double imdbRating;
     private String filePath;
     private LocalDateTime lastView;
     private LocalDateTime createdAt;
@@ -13,10 +13,10 @@ public class Movie {
     private double personalRating;
 
     //Constructor
-    public Movie(int id, String name, double rating, String filePath, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
+    public Movie(int id, String name, double imdbRating, String filePath, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
         this.id = id;
         this.name = name;
-        this.rating = rating;
+        this.imdbRating = imdbRating;
         this.filePath = filePath;
         this.lastView = lastView;
         this.createdAt = createdAt;
@@ -32,8 +32,8 @@ public class Movie {
         return name;
     }
 
-    public double getRating() {
-        return rating;
+    public double getImdbRating() {
+        return imdbRating;
     }
 
     public String getFilePath() {
