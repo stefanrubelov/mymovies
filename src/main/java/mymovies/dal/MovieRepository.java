@@ -5,12 +5,34 @@ import mymovies.dal.db.QueryBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MovieRepository {
     final private QueryBuilder queryBuilder = new QueryBuilder();
     final private Logger logger = Logger.getAnonymousLogger();
+
+    public List<Movie> getAll() {
+        List<Movie> movies = new ArrayList<>();
+
+        try (ResultSet rs = queryBuilder
+                .select("*")
+                .from("movies")
+                .get()) {
+
+            while (rs != null && rs.next()) {
+                Movie movie = mapModel(rs, rs.getInt("id"));
+                movies.add(movie);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        return movies;
+    }
 
     public Movie findById(int id) {
         Movie result = null;
@@ -88,12 +110,12 @@ public class MovieRepository {
     }
 
     private Movie mapModel(ResultSet resultSet, int id) throws SQLException {
-
         String name = resultSet.getString("name");
-        Integer imdbRating = resultSet.getObject("imdb_rating", Integer.class); // Handles nullable values
+        Integer imdbRating = resultSet.getObject("imdb_rating", Integer.class);
         String filePath = resultSet.getString("file_path");
-        Integer personalRating = resultSet.getObject("personal_rating", Integer.class); // Handles nullable values
+        Integer personalRating = resultSet.getObject("personal_rating", Integer.class);
+        LocalDateTime lastView = resultSet.getTimestamp("last_view").toLocalDateTime();
 
-        return new Movie(id, name, filePath, imdbRating, personalRating);
+        return new Movie(id, name, filePath, imdbRating, personalRating, lastView);
     }
 }

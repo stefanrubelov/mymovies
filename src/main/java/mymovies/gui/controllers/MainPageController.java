@@ -1,4 +1,4 @@
-package mymovies.gui.controllers.category;
+package mymovies.gui.controllers;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -12,15 +12,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import mymovies.be.Movie;
-import mymovies.dal.db.QueryBuilder;
+import mymovies.bll.MovieManager;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainPageController {
+    private final MovieManager movieManager = new MovieManager();
 
     @FXML
     private TableView<Movie> movieTableView;
@@ -54,7 +53,6 @@ public class MainPageController {
     private static final int ROWS_PER_PAGE = 5;
     private ObservableList<Movie> movieList = FXCollections.observableArrayList();
 
-
     @FXML
     public void initialize() {
         configureTableView();
@@ -73,16 +71,12 @@ public class MainPageController {
 
     }
 
-
     private void configurePagination() {
         int totalPages = (int) Math.ceil((double) movieList.size() / ROWS_PER_PAGE);
         pagination.setPageCount(totalPages);
 
-        pagination.setPageFactory(pageIndex -> {
-            return createPage(pageIndex);
-        });
+        pagination.setPageFactory(pageIndex -> createPage(pageIndex));
     }
-
 
     private Node createPage(int pageIndex) {
         int start = pageIndex * ROWS_PER_PAGE;
@@ -92,10 +86,7 @@ public class MainPageController {
         movieTableView.setItems(currentPageData);
 
         return new AnchorPane(movieTableView);
-
     }
-
-
 
     private void loadMoviesIntoTableView() {
         List<Movie> movies = fetchMovies();
@@ -108,31 +99,7 @@ public class MainPageController {
         configurePagination();
     }
 
-
     private List<Movie> fetchMovies() {
-        List<Movie> movies = new ArrayList<>();
-        QueryBuilder queryBuilder = new QueryBuilder();
-
-        try (ResultSet rs = queryBuilder
-                .select("id, name, imdb_rating, file_path, last_view, created_at, updated_at, personal_rating")
-                .from("movies")
-                .get()) {
-
-            while (rs != null && rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                double imdbRating = rs.getDouble("imdb_rating");
-                String filePath = rs.getString("file_path");
-                LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
-                LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-                LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                double personalRating = rs.getDouble("personal_rating");
-
-                movies.add(new Movie(id, name, imdbRating, filePath, lastView, createdAt, updatedAt, personalRating));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return movies;
+       return movieManager.getAllMovies();
     }
 }

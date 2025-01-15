@@ -14,6 +14,10 @@ public class MovieManager {
     final private MovieRepository movieRepository = new MovieRepository();
     final private Logger logger = Logger.getAnonymousLogger();
 
+    public List<Movie> getAllMovies() {
+        return movieRepository.getAll();
+    }
+
     public void addMovie(Movie movie, List<Integer> categoryIds) {
         Movie newMovie = movieRepository.create(movie);
 
