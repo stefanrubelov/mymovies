@@ -11,6 +11,7 @@ public class Movie {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer personalRating;
+    private String categories;
 
     public Movie(int id, String name, Integer imdbRating, String filePath, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, Integer personalRating) {
         this.id = id;
@@ -101,5 +102,13 @@ public class Movie {
     }
     public void setPersonalRating(Integer personalRating) {
         this.personalRating = personalRating;
+    }
+
+    public void setCategories(String categories) {
+        this.categories = categories;
+    }
+
+    public String getCategories(){
+        return categories;
     }
 }

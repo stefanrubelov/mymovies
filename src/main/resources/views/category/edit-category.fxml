@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.controllers.category.EditCategoryController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.controllers.category.EditCategoryController">
     <children>
-        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0">
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
             <children>
                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                     <children>
@@ -29,12 +29,13 @@
                 </HBox>
                 <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="20.0">
                     <children>
-                        <Button mnemonicParsing="false" onAction="#update" text="Save" />
+                        <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#update" text="Save" />
                     </children>
                 </HBox>
                 <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0">
                     <children>
                         <Label fx:id="errorMessageLbl" textFill="#ff1f1f" />
+                  <Label fx:id="successMessageLbl" layoutX="310.0" layoutY="16.0" textFill="#22ff00" />
                     </children>
                 </HBox>
             </children>
