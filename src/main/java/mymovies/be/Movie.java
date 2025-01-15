@@ -5,15 +5,14 @@ import java.time.LocalDateTime;
 public class Movie {
     private int id;
     private String name;
-    private double imdbRating;
+    private Integer imdbRating;
     private String filePath;
     private LocalDateTime lastView;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private double personalRating;
+    private Integer personalRating;
 
-    //Constructor
-    public Movie(int id, String name, double imdbRating, String filePath, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, double personalRating) {
+    public Movie(int id, String name, Integer imdbRating, String filePath, LocalDateTime lastView, LocalDateTime createdAt, LocalDateTime updatedAt, Integer personalRating) {
         this.id = id;
         this.name = name;
         this.imdbRating = imdbRating;
@@ -22,6 +21,33 @@ public class Movie {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.personalRating = personalRating;
+    }
+    public Movie(int id, String name, String filePath, Integer imdbRating, Integer personalRating) {
+        this.id = id;
+        this.name = name;
+        this.filePath = filePath;
+        this.imdbRating = imdbRating;
+        this.personalRating = personalRating;
+    }
+
+    public Movie(int id, String name, String filePath, Integer imdbRating, Integer personalRating, LocalDateTime lastView) {
+        this.id = id;
+        this.name = name;
+        this.filePath = filePath;
+        this.imdbRating = imdbRating;
+        this.personalRating = personalRating;
+        this.lastView = lastView;
+    }
+
+    public Movie(String name, String filePath, Integer imdbRating, Integer personalRating) {
+        this.name = name;
+        this.filePath = filePath;
+        this.imdbRating = imdbRating;
+        this.personalRating = personalRating;
+    }
+
+    public Movie(int id){
+        this.id = id;
     }
 
     public int getId() {
@@ -32,7 +58,7 @@ public class Movie {
         return name;
     }
 
-    public double getImdbRating() {
+    public Integer getImdbRating() {
         return imdbRating;
     }
 
@@ -47,12 +73,33 @@ public class Movie {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public double getPersonalRating() {
+    public Integer getPersonalRating() {
         return personalRating;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImdbRating(Integer imdbRating) {
+        this.imdbRating = imdbRating;
+    }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setLastView(LocalDateTime lastView) {
+        this.lastView = lastView;
+    }
+    public void setPersonalRating(Integer personalRating) {
+        this.personalRating = personalRating;
     }
 }
