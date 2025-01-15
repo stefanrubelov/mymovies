@@ -21,9 +21,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // Display a pop-up message after the stage is shown
         SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(null, "Hello, please delete movies rated 6.0 or below and those not opened in 2 years.", "Warning", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Reminder, you have movies with rating of 6.0 or below and that you haven't opened in more than 2 years.", "Warning", JOptionPane.ERROR_MESSAGE);
         });
 
         DBConnection db = new DBConnection();
