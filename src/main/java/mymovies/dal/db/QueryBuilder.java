@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class QueryBuilder {
     private String selectClause = "";
@@ -41,7 +40,7 @@ public class QueryBuilder {
         }
 
         if (columns.length == 0) {
-            return this; // Do nothing if no column provided
+            return this;
         }
 
         if (columns.length == 1 && columns[0].equals("*")) {
@@ -70,6 +69,17 @@ public class QueryBuilder {
     public QueryBuilder where(String column, String operator, Object value) {
         whereClauses.add(column + " " + operator + " ?");
         parameters.add(value);
+        return this;
+    }
+
+    public QueryBuilder whereIn(String column, List<Object> values) {
+        if (values == null || values.isEmpty()) {
+            throw new IllegalArgumentException("The values for whereIn() cannot be null or empty.");
+        }
+
+        String placeholders = String.join(", ", Collections.nCopies(values.size(), "?"));
+        whereClauses.add(column + " IN (" + placeholders + ")");
+        parameters.addAll(values);
         return this;
     }
 
@@ -112,7 +122,9 @@ public class QueryBuilder {
     public QueryBuilder set(String column, Object value) {
         String valueString;
 
-        if (value instanceof String) {
+        if (value == null) {
+            valueString = "NULL";
+        } else if (value instanceof String) {
             valueString = "'" + value + "'";
         } else if (value instanceof LocalDateTime) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -140,14 +152,6 @@ public class QueryBuilder {
         }
 
         setClauses.add(column + " = " + valueString);
-        return this;
-    }
-
-
-    public QueryBuilder when(boolean condition, Consumer<QueryBuilder> callback) {
-        if (condition) {
-            callback.accept(this);
-        }
         return this;
     }
 
@@ -249,6 +253,43 @@ public class QueryBuilder {
         }
     }
 
+    public ResultSet saveAndReturn() {
+        this.get = false;
+        this.update = false;
+        this.delete = false;
+        this.insert = true;
+
+        if (insertColumnsPlaceholders.isEmpty()) {
+            throw new IllegalStateException("Insert columns must be defined before calling saveAndReturn.");
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ").append(fromClause)
+                .append(" (").append(String.join(", ", insertColumnsPlaceholders)).append(") ")
+                .append("VALUES (").append(String.join(", ", Collections.nCopies(parameters.size(), "?"))).append("); ")
+                .append("SELECT SCOPE_IDENTITY() AS id;");
+
+        System.out.println(sql);
+
+        try {
+            Connection connection = dbConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+
+            for (int i = 0; i < parameters.size(); i++) {
+                preparedStatement.setObject(i + 1, parameters.get(i));
+            }
+
+            return preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQL INSERT Execution Error with SCOPE_IDENTITY(): " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } finally {
+            resetFields();
+        }
+    }
+
+
     public ResultSet get() {
         this.insert = false;
         this.update = false;
@@ -325,11 +366,12 @@ public class QueryBuilder {
     }
 
     public void resetFields() {
-        selectClause = "*";
+        selectClause = "";
         fromClause = "";
         whereClauses.clear();
         parameters.clear();
         joinClauses.clear();
+        setClauses.clear();
         orderByClause = "";
         top = null;
         unionClauses.clear();
