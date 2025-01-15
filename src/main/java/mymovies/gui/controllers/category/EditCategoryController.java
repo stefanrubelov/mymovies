@@ -1,10 +1,15 @@
 package mymovies.gui.controllers.category;
 
+import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 import mymovies.be.Category;
 import mymovies.bll.CategoryManager;
+import mymovies.gui.PageManager;
 import mymovies.utils.Validator;
 
 public class EditCategoryController {
@@ -15,14 +20,31 @@ public class EditCategoryController {
     private TextField categoryName;
 
     @FXML
+    private Button saveBtn;
+
+    @FXML
     private Label errorMessageLbl;
 
-    public void update() {
+    @FXML
+    private Label successMessageLbl;
+
+    public void update(ActionEvent actionEvent) {
         if (validateFields()) {
             category.setName(categoryName.getText());
             categoryManager.updateCategory(category);
-            //TODO success message?
-            //TODO redirect to homepage
+
+            saveBtn.setDisable(true);
+            successMessageLbl.setVisible(true);
+            successMessageLbl.setText("Category updated successfully.");
+
+            PauseTransition pause = new PauseTransition(Duration.millis(1250));
+            pause.setOnFinished(event -> {
+                successMessageLbl.setVisible(false);
+                successMessageLbl.setText("");
+
+                PageManager.allCategories(actionEvent);
+            });
+            pause.play();
         }
     }
 
@@ -53,6 +75,7 @@ public class EditCategoryController {
             System.out.println(errorMessages.toString());
             errorMessageLbl.setText(errorMessages.toString());
         }
+
         return false;
     }
 }

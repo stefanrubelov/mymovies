@@ -1,9 +1,14 @@
 package mymovies.gui.controllers.category;
 
+import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 import mymovies.bll.CategoryManager;
+import mymovies.gui.PageManager;
 import mymovies.utils.Validator;
 
 public class AddCategoryController {
@@ -13,25 +18,64 @@ public class AddCategoryController {
     private TextField categoryNameInput;
 
     @FXML
+    private Button saveBtn;
+
+    @FXML
+    private Button saveAndReturnBtn;
+
+    @FXML
     private Label errorMessageLbl;
 
     @FXML
-    public void save() {
-        this.saveCategory();
-        //TODO redirect
+    private Label successMessageLbl;
+
+    @FXML
+    public void save(ActionEvent actionEvent) {
+        if (validateFields()) {
+            this.saveCategory();
+
+            saveBtn.setDisable(true);
+            saveAndReturnBtn.setDisable(true);
+            successMessageLbl.setVisible(true);
+            successMessageLbl.setText("Category added successfully.");
+
+            PauseTransition pause = new PauseTransition(Duration.millis(1000));
+            pause.setOnFinished(event -> {
+                saveBtn.setDisable(false);
+                saveAndReturnBtn.setDisable(false);
+                successMessageLbl.setVisible(false);
+                successMessageLbl.setText("");
+                categoryNameInput.clear();
+            });
+            pause.play();
+        }
     }
 
-    public void saveAndReturn() {
-        this.saveCategory();
-        //TODO redirect to homepage?
+    public void saveAndReturn(ActionEvent actionEvent) {
+        if (validateFields()) {
+
+            this.saveCategory();
+            saveBtn.setDisable(true);
+            saveAndReturnBtn.setDisable(true);
+            successMessageLbl.setVisible(true);
+            successMessageLbl.setText("Category added successfully.");
+
+            PauseTransition pause = new PauseTransition(Duration.millis(1000));
+            pause.setOnFinished(event -> {
+                successMessageLbl.setVisible(false);
+                successMessageLbl.setText("");
+
+                PageManager.allCategories(actionEvent);
+            });
+            pause.play();
+        }
     }
 
     public void saveCategory() {
-        if (validateFields()) {
-            String categoryName = categoryNameInput.getText();
+        String categoryName = categoryNameInput.getText();
 
-            categoryManager.addCategory(categoryName);
-        }
+        categoryManager.addCategory(categoryName);
+
     }
 
     private boolean validateFields() {
@@ -49,7 +93,7 @@ public class AddCategoryController {
             validator.getErrors().forEach((field, messages) -> {
                 messages.forEach(message -> errorMessages.append(message).append("\n"));
             });
-            System.out.println(errorMessages.toString());
+            errorMessageLbl.setVisible(true);
             errorMessageLbl.setText(errorMessages.toString());
         }
         return false;

@@ -18,6 +18,10 @@ public class MovieManager {
         return movieRepository.getAll();
     }
 
+    public List<Movie> getAllMoviesWithCategories() {
+        return movieRepository.getAllWithCategories();
+    }
+
     public void addMovie(Movie movie, List<Integer> categoryIds) {
         Movie newMovie = movieRepository.create(movie);
 
@@ -46,6 +50,10 @@ public class MovieManager {
         for (Integer categoryId : categoryIds) {
             movieRepository.addCategory(movie, categoryId);
         }
+    }
+
+    public void markAsViewed(Movie movie){
+        movieRepository.markAsViewed(movie.getId());
     }
 
     public void playMovie(Movie movie) {

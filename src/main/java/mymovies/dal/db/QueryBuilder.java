@@ -18,6 +18,7 @@ public class QueryBuilder {
     private final List<String> whereClauses = new ArrayList<>();
     private final List<Object> parameters = new ArrayList<>();
     private final List<String> joinClauses = new ArrayList<>();
+    private final List<String> groupByClauses = new ArrayList<>();
     private String orderByClause = "";
     private Integer top = null;
     private final List<String> unionClauses = new ArrayList<>();
@@ -174,6 +175,16 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder groupBy(String... columns) {
+        if (columns.length == 0) {
+            return this;
+        }
+
+        String joinedColumns = String.join(", ", columns);
+        groupByClauses.add(joinedColumns);
+        return this;
+    }
+
     public String build() {
         if (fromClause.isEmpty()) {
             throw new IllegalStateException("FROM clause is required.");
@@ -206,7 +217,6 @@ public class QueryBuilder {
             query.append("INSERT INTO ").append(fromClause).append(" (").append(String.join(", ", insertColumnsPlaceholders)).append(") VALUES (")
                     .append(String.join(", ", Collections.nCopies(parameters.size(), "?")))
                     .append(")");
-
         }
 
         if (!joinClauses.isEmpty()) {
@@ -215,6 +225,10 @@ public class QueryBuilder {
 
         if (!whereClauses.isEmpty()) {
             query.append(" WHERE ").append(String.join(" AND ", whereClauses));
+        }
+
+        if (!groupByClauses.isEmpty()) {
+            query.append(" GROUP BY ").append(String.join(", ", groupByClauses));
         }
 
         if (!orderByClause.isEmpty()) {
@@ -376,5 +390,6 @@ public class QueryBuilder {
         top = null;
         unionClauses.clear();
         insertColumnsPlaceholders.clear();
+        groupByClauses.clear();
     }
 }

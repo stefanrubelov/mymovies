@@ -3,17 +3,24 @@ package mymovies.gui.controllers;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import mymovies.App;
 import mymovies.be.Movie;
 import mymovies.bll.MovieManager;
+import mymovies.gui.PageManager;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +47,11 @@ public class MainPageController {
     @FXML
     private TableColumn<Movie, Double> personalRatingColumn;
     @FXML
-    private Button addMovieBtn;
+    private TableColumn<Movie, String> categoriesColumn;
     @FXML
-    private Button removeMovieBtn;
+    private Button addNewMovieBtn;
     @FXML
-    private Button addCategoryBtn;
-    @FXML
-    private Button removeCategoryBtn;
+    private Button viewCategoriesBtn;
     @FXML
     private Pagination pagination;
 
@@ -65,10 +70,10 @@ public class MainPageController {
         imdbRatingColumn.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
         filePathColumn.setCellValueFactory(new PropertyValueFactory<>("filePath"));
         lastViewColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getLastView()));
-        createdAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCreatedAt()));
-        updatedAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getUpdatedAt()));
+//        createdAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCreatedAt()));
+//        updatedAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getUpdatedAt()));
         personalRatingColumn.setCellValueFactory(new PropertyValueFactory<>("personalRating"));
-
+        categoriesColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategories()));
     }
 
     private void configurePagination() {
@@ -100,6 +105,16 @@ public class MainPageController {
     }
 
     private List<Movie> fetchMovies() {
-       return movieManager.getAllMovies();
+       return movieManager.getAllMoviesWithCategories();
+    }
+
+    @FXML
+    private void addNewMovieScene(ActionEvent actionEvent){
+        PageManager.addMovie(actionEvent);
+    }
+
+    @FXML
+    private void viewAllCategoriesScene(ActionEvent actionEvent){
+        PageManager.allCategories(actionEvent);
     }
 }

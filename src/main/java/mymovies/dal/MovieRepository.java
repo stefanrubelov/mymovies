@@ -34,6 +34,29 @@ public class MovieRepository {
         return movies;
     }
 
+    public List<Movie> getAllWithCategories() {
+        List<Movie> movies = new ArrayList<>();
+
+        try (ResultSet rs = queryBuilder
+                .select("movies.id as movie_id", "movies.name", "movies.file_path", "movies.imdb_rating", "movies.personal_rating", "movies.last_view", "movies.created_at", "movies.updated_at", "STRING_AGG(categories.name, ', ') AS categories")
+                .from("movies")
+                .join("category_movie", "movies.id = category_movie.movie_id", "INNER")
+                .join("categories", "category_movie.category_id = categories.id", "INNER")
+                .groupBy("movies.id", "movies.name", "movies.imdb_rating", "movies.personal_rating", "movies.last_view", "movies.created_at", "movies.updated_at", "movies.file_path")
+                .get()) {
+
+            while (rs != null && rs.next()) {
+                Movie movie = mapModel(rs, rs.getInt("movie_id"));
+                movie.setCategories(rs.getString("categories"));
+                movies.add(movie);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        return movies;
+    }
+
     public Movie findById(int id) {
         Movie result = null;
         ResultSet resultSet = queryBuilder
@@ -109,12 +132,20 @@ public class MovieRepository {
                 .delete();
     }
 
+    public void markAsViewed(int id) {
+        queryBuilder
+                .table("movies")
+                .set("last_view", LocalDateTime.now())
+                .where("id", "=",id)
+                .update();
+    }
+
     private Movie mapModel(ResultSet resultSet, int id) throws SQLException {
         String name = resultSet.getString("name");
         Integer imdbRating = resultSet.getObject("imdb_rating", Integer.class);
         String filePath = resultSet.getString("file_path");
         Integer personalRating = resultSet.getObject("personal_rating", Integer.class);
-        LocalDateTime lastView = resultSet.getTimestamp("last_view").toLocalDateTime();
+        LocalDateTime lastView = resultSet.getTimestamp("last_view") != null ? resultSet.getTimestamp("last_view").toLocalDateTime() : null;
         LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
         LocalDateTime updatedAt = resultSet.getTimestamp("updated_at").toLocalDateTime();
 

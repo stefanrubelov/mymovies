@@ -11,6 +11,7 @@ import mymovies.be.Category;
 import mymovies.be.Movie;
 import mymovies.bll.CategoryManager;
 import mymovies.bll.MovieManager;
+import mymovies.gui.PageManager;
 import mymovies.utils.Validator;
 
 import java.io.File;
@@ -67,6 +68,8 @@ public class AddMovieController {
 
             Movie movie = new Movie(name, moviePath, imdbRatingValue, personalRatingValue);
             movieManager.addMovie(movie, selectedCategoryIds);
+
+            PageManager.homepage(actionEvent);
         }
     }
 
@@ -98,9 +101,10 @@ public class AddMovieController {
     private boolean validateFields() {
         Validator validator = new Validator()
                 .setField("name", nameField.getText())
-                .setField("imdbRating", imdbRating.getValue())
-                .required("name", "imdbRating")
-                .numeric("imdbRating")
+                .setField("imdb rating", imdbRating.getValue())
+                .setField("file path", moviePath)
+                .required("name", "imdb rating","file path")
+                .numeric("imdb rating")
                 .min("name", 3)
                 .min("imdbRating", 1)
                 .max("imdbRating", 10);
