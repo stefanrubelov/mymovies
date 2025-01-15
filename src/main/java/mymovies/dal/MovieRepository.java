@@ -115,7 +115,9 @@ public class MovieRepository {
         String filePath = resultSet.getString("file_path");
         Integer personalRating = resultSet.getObject("personal_rating", Integer.class);
         LocalDateTime lastView = resultSet.getTimestamp("last_view").toLocalDateTime();
+        LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+        LocalDateTime updatedAt = resultSet.getTimestamp("updated_at").toLocalDateTime();
 
-        return new Movie(id, name, filePath, imdbRating, personalRating, lastView);
+        return new Movie(id, name, imdbRating, filePath, lastView, createdAt, updatedAt, personalRating);
     }
 }
