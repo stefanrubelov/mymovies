@@ -5,24 +5,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import mymovies.App;
 import mymovies.be.Movie;
 import mymovies.bll.MovieManager;
+import mymovies.gui.MovieController;
 import mymovies.gui.PageManager;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainPageController {
@@ -54,6 +46,12 @@ public class MainPageController {
     private Button viewCategoriesBtn;
     @FXML
     private Pagination pagination;
+    @FXML
+    private Slider ratingSlider;
+    @FXML
+    private ComboBox<String> ratingDropDown;
+    @FXML
+    private Label ratingSliderValue;
 
     private static final int ROWS_PER_PAGE = 5;
     private ObservableList<Movie> movieList = FXCollections.observableArrayList();
@@ -62,6 +60,10 @@ public class MainPageController {
     public void initialize() {
         configureTableView();
         loadMoviesIntoTableView();
+    }
+
+    public TableView<Movie> getTableView() {
+        return movieTableView;
     }
 
     private void configureTableView() {
@@ -116,5 +118,22 @@ public class MainPageController {
     @FXML
     private void viewAllCategoriesScene(ActionEvent actionEvent){
         PageManager.allCategories(actionEvent);
+    }
+
+    @FXML
+    private void onRatingSliderChanged() {
+        MovieController movieController = new MovieController();
+        ratingSliderValue.setText(String.format("%.0f", ratingSlider.getValue()));
+        int ratingSliderNum = Integer.parseInt(ratingSliderValue.getText());
+        movieController.filterMoviesByRating(ratingSliderNum);
+    }
+
+    @FXML
+    public void onCategorySelected(ActionEvent event) {
+
+    }
+
+    private void loadFilteredData() {
+
     }
 }
