@@ -73,14 +73,30 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder whereIn(String column, List<Object> values) {
+    public QueryBuilder whereIn(String column, List<Integer> values) {
         if (values == null || values.isEmpty()) {
-            throw new IllegalArgumentException("The values for whereIn() cannot be null or empty.");
+           // log
+        } else {
+            String placeholders = String.join(", ", Collections.nCopies(values.size(), "?"));
+            whereClauses.add(column + " IN (" + placeholders + ")");
+            parameters.addAll(values);
         }
 
-        String placeholders = String.join(", ", Collections.nCopies(values.size(), "?"));
-        whereClauses.add(column + " IN (" + placeholders + ")");
-        parameters.addAll(values);
+        return this;
+    }
+
+    public QueryBuilder whereInSubquery(String column, String subquery, List<Integer> subqueryParams) {
+        if (subquery == null || subquery.isEmpty()) {
+            throw new IllegalArgumentException("Subquery cannot be null or empty");
+        }
+
+        if (subqueryParams == null || subqueryParams.isEmpty()) {
+            whereClauses.add("1 = 1");
+        } else {
+            whereClauses.add(column + " IN (" + subquery + ")");
+            parameters.addAll(subqueryParams);
+        }
+
         return this;
     }
 

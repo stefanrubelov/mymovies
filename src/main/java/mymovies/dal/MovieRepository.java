@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +58,38 @@ public class MovieRepository {
         return movies;
     }
 
+    public List<Movie> filterAllMoviesWithCategories(String name, Integer imdbRating, Integer personalRating, List<Integer> categoryIds) {
+        List<Movie> movies = new ArrayList<>();
+
+        try (ResultSet rs = queryBuilder
+                .select("movies.id as movie_id", "movies.name", "movies.file_path", "movies.imdb_rating", "movies.personal_rating", "movies.last_view", "movies.created_at", "movies.updated_at", "STRING_AGG(categories.name, ', ') AS categories")
+                .from("movies")
+                .where("movies.name", "like", "%" + name + "%")
+                .where("imdb_rating", ">=", imdbRating)
+                .where("personal_rating", ">=", personalRating)
+                .join("category_movie", "movies.id = category_movie.movie_id", "INNER")
+                .join("categories", "category_movie.category_id = categories.id", "INNER")
+                .groupBy("movies.id", "movies.name", "movies.imdb_rating", "movies.personal_rating", "movies.last_view", "movies.created_at", "movies.updated_at", "movies.file_path")
+                .whereInSubquery(
+                        "movies.id",
+                        "SELECT category_movie.movie_id FROM category_movie WHERE category_movie.category_id IN (" +
+                                String.join(", ", Collections.nCopies(categoryIds.size(), "?")) + ")",
+                        categoryIds
+                )
+                .get()) {
+
+            while (rs != null && rs.next()) {
+                Movie movie = mapModel(rs, rs.getInt("movie_id"));
+                movie.setCategories(rs.getString("categories"));
+                movies.add(movie);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        return movies;
+    }
+
     public Movie findById(int id) {
         Movie result = null;
         ResultSet resultSet = queryBuilder
@@ -76,6 +109,25 @@ public class MovieRepository {
 
             return result;
         }
+    }
+
+    public List<Movie> getLowRatedOlderMovies() {
+        List<Movie> movies = new ArrayList<>();
+        try (ResultSet rs = queryBuilder
+                .select("*")
+                .from("movies")
+                .where("last_view", "<", LocalDateTime.now().minusMonths(24))
+                .where("personal_rating", "<", 6)
+                .get()) {
+
+            while (rs != null && rs.next()) {
+                Movie movie = mapModel(rs, rs.getInt("id"));
+                movies.add(movie);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return movies;
     }
 
     public Movie create(Movie movie) {
@@ -136,7 +188,7 @@ public class MovieRepository {
         queryBuilder
                 .table("movies")
                 .set("last_view", LocalDateTime.now())
-                .where("id", "=",id)
+                .where("id", "=", id)
                 .update();
     }
 

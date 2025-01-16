@@ -18,6 +18,10 @@ public class MovieManager {
         return movieRepository.getAll();
     }
 
+    public List<Movie> filterAllMoviesWithCategories(String name, Integer imdbRating, Integer personalRating, List<Integer> categoryIds) {
+        return movieRepository.filterAllMoviesWithCategories(name, imdbRating, personalRating, categoryIds);
+    }
+
     public List<Movie> getAllMoviesWithCategories() {
         return movieRepository.getAllWithCategories();
     }
@@ -38,6 +42,10 @@ public class MovieManager {
         movieRepository.delete(movie.getId());
     }
 
+    public boolean checkForOlderMovies() {
+        return !movieRepository.getLowRatedOlderMovies().isEmpty();
+    }
+
     public void attachCategoriesToMovie(Movie movie, List<Integer> categoryIds) {
         for (Integer categoryId : categoryIds) {
             movieRepository.addCategory(movie, categoryId);
@@ -52,7 +60,7 @@ public class MovieManager {
         }
     }
 
-    public void markAsViewed(Movie movie){
+    public void markAsViewed(Movie movie) {
         movieRepository.markAsViewed(movie.getId());
     }
 

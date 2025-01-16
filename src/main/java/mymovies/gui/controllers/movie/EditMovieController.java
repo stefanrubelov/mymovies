@@ -14,6 +14,7 @@ import mymovies.be.Category;
 import mymovies.be.Movie;
 import mymovies.bll.CategoryManager;
 import mymovies.bll.MovieManager;
+import mymovies.gui.PageManager;
 import mymovies.utils.Validator;
 
 import java.io.File;
@@ -65,8 +66,8 @@ public class EditMovieController {
             movie.setPersonalRating(personalRatingValue);
             movie.setFilePath(moviePath);
             movieManager.updateMovie(movie, selectedCategoryIds);
+            PageManager.homepage(actionEvent);
         }
-        //TODO redirect to homepage
     }
 
     public void setMovie(Movie movie) {
@@ -144,5 +145,9 @@ public class EditMovieController {
             errorMessagesLbl.setText(errorMessages.toString());
         }
         return false;
+    }
+
+    public void goBack(ActionEvent actionEvent) {
+        PageManager.homepage(actionEvent);
     }
 }

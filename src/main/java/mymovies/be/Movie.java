@@ -30,16 +30,6 @@ public class Movie {
         this.imdbRating = imdbRating;
         this.personalRating = personalRating;
     }
-
-    public Movie(int id, String name, String filePath, Integer imdbRating, Integer personalRating, LocalDateTime lastView) {
-        this.id = id;
-        this.name = name;
-        this.filePath = filePath;
-        this.imdbRating = imdbRating;
-        this.personalRating = personalRating;
-        this.lastView = lastView;
-    }
-
     public Movie(String name, String filePath, Integer imdbRating, Integer personalRating) {
         this.name = name;
         this.filePath = filePath;

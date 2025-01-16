@@ -1,5 +1,7 @@
 package mymovies.gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,6 +15,7 @@ import mymovies.be.Movie;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import mymovies.dal.db.QueryBuilder;
+import mymovies.gui.controllers.MainPageController;
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -37,6 +40,9 @@ public class MovieController {
 
     @FXML
     private Label ratingLabel;
+    
+    MainPageController mainPageController = new MainPageController();
+    
 
     @FXML
     public void initialize() {
@@ -46,7 +52,7 @@ public class MovieController {
         displayMoviesWithRatings(allMovies); //
     }
 
-    private List<Movie> fetchMoviesWithRatings() {
+    public List<Movie> fetchMoviesWithRatings() {
         List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
@@ -73,7 +79,7 @@ public class MovieController {
         return movies;
     }
 
-    private void displayMoviesWithRatings(List<Movie> movies) {
+    public void displayMoviesWithRatings(List<Movie> movies) {
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
                         movie.getName(),
@@ -186,7 +192,7 @@ public class MovieController {
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                int rating = rs.getInt("rating");
+                int rating = rs.getInt("imdb_rating");
                 String fileLink = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
@@ -201,13 +207,8 @@ public class MovieController {
         return movies;
     }
 
-    public void onRatingSliderChanged(MouseEvent event) {
-        double minRating = ratingSlider.getValue();
-        ratingLabel.setText(String.format("%.1f", minRating)); //modify the value in the ratingLabel
-        filterMoviesByRating(minRating); //filter movies based on min rating
-    }
 
-    private void filterMoviesByRating(double minRating) {
+    public void filterMoviesByRating(int minRating) {
         List<Movie> movies = fetchMoviesByRating(minRating);
         List<String> formattedMovies = movies.stream()
                 .map(movie -> String.format("%s - IMDB: %.1f | Personal: %.1f",
@@ -219,7 +220,7 @@ public class MovieController {
         movieListView.getItems().setAll(formattedMovies);
     }
 
-    private List<Movie> fetchMoviesByRating(double minRating) {
+    public List<Movie> fetchMoviesByRating(double minRating) {
         List<Movie> movies = new ArrayList<>();
         QueryBuilder queryBuilder = new QueryBuilder();
 
@@ -232,14 +233,14 @@ public class MovieController {
             while (rs != null && rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                int rating = rs.getInt("rating");
+                int imdbRating = rs.getInt("imdb_rating");
                 String fileLink = rs.getString("file_path");
                 LocalDateTime lastView = rs.getTimestamp("last_view").toLocalDateTime();
                 LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
                 int personalRating = rs.getInt("personal_rating");
 
-                movies.add(new Movie(id, name, rating, fileLink, lastView, createdAt, updatedAt, personalRating));
+                movies.add(new Movie(id, name, imdbRating, fileLink, lastView, createdAt, updatedAt, personalRating));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,4 +291,5 @@ public class MovieController {
             }
         });
     }
+
 }

@@ -6,7 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mymovies.be.Category;
+import mymovies.be.Movie;
 import mymovies.gui.controllers.category.EditCategoryController;
+import mymovies.gui.controllers.movie.EditMovieController;
 
 import java.io.IOException;
 
@@ -56,6 +58,20 @@ public class PageManager {
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load view: /views/category/edit-category.fxml", e);
+        }
+    }
+
+    public static void editMovie(Movie movie, Node selectedNode) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(PageManager.class.getResource("/views/movie/edit-movie.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            EditMovieController editMovieController = fxmlLoader.getController();
+            editMovieController.setMovie(movie);
+            Stage stage = (Stage) selectedNode.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load view: /views/movie/edit-movie.fxml", e);
         }
     }
 }
