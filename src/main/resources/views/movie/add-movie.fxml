@@ -125,10 +125,11 @@
             </VBox>
          </children>
       </HBox>
-        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="600.0">
+        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="600.0" spacing="20.0">
             <children>
 
                 <Button alignment="CENTER" maxWidth="100.0" onAction="#save" text="Save" />
+            <Button alignment="CENTER" layoutX="290.0" layoutY="20.0" maxWidth="100.0" onAction="#goBack" text="Go back" />
             </children>
         </HBox>
     </VBox>

@@ -1,16 +1,17 @@
 package mymovies;
 
-import mymovies.dal.db.connection.DBConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import mymovies.dal.db.connection.DBConnection;
 import mymovies.utils.Env;
 
-import javax.swing.*;
 import java.sql.SQLException;
 
 public class App extends Application {
+    private static boolean hasCheckedForOlderMovies = false;
+
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/views/homepage.fxml"));
@@ -19,10 +20,6 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(null, "Reminder, you have movies with rating of 6.0 or below and that you haven't opened in more than 2 years.", "Warning", JOptionPane.ERROR_MESSAGE);
-        });
-
         DBConnection db = new DBConnection();
         try {
             db.testConnection();
@@ -30,6 +27,14 @@ public class App extends Application {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean hasCheckedForOlderMovies() {
+        return hasCheckedForOlderMovies;
+    }
+
+    public static void setHasCheckedForOlderMovies(boolean checked) {
+        hasCheckedForOlderMovies = checked;
     }
 
     public static void main(String[] args) {

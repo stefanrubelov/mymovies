@@ -35,9 +35,6 @@ public class AddMovieController {
     private ListView<Category> category;
 
     @FXML
-    private Button uploadFileBtn;
-
-    @FXML
     private VBox vboxContainer;
 
     @FXML
@@ -122,5 +119,9 @@ public class AddMovieController {
             errorMessagesLbl.setText(errorMessages.toString());
         }
         return false;
+    }
+
+    public void goBack(ActionEvent actionEvent) {
+        PageManager.homepage(actionEvent);
     }
 }

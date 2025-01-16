@@ -1,24 +1,27 @@
 package mymovies.gui.controllers;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
+import mymovies.App;
+import mymovies.be.Category;
 import mymovies.be.Movie;
+import mymovies.bll.CategoryManager;
 import mymovies.bll.MovieManager;
-import mymovies.gui.MovieController;
 import mymovies.gui.PageManager;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainPageController {
     private final MovieManager movieManager = new MovieManager();
+    private final CategoryManager categoryManager = new CategoryManager();
 
     @FXML
     private TableView<Movie> movieTableView;
@@ -33,37 +36,37 @@ public class MainPageController {
     @FXML
     private TableColumn<Movie, LocalDateTime> lastViewColumn;
     @FXML
-    private TableColumn<Movie, LocalDateTime> createdAtColumn;
-    @FXML
-    private TableColumn<Movie, LocalDateTime> updatedAtColumn;
-    @FXML
     private TableColumn<Movie, Double> personalRatingColumn;
     @FXML
     private TableColumn<Movie, String> categoriesColumn;
     @FXML
-    private Button addNewMovieBtn;
+    private Slider personalRatingSlider;
     @FXML
-    private Button viewCategoriesBtn;
+    private Slider imdbRatingSlider;
     @FXML
-    private Pagination pagination;
+    private ListView<Category> category;
     @FXML
-    private Slider ratingSlider;
-    @FXML
-    private ComboBox<String> ratingDropDown;
-    @FXML
-    private Label ratingSliderValue;
+    private TextField movieTitleField;
 
-    private static final int ROWS_PER_PAGE = 5;
     private ObservableList<Movie> movieList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         configureTableView();
-        loadMoviesIntoTableView();
+        fetchMovies();
+        fetchCategories();
+        configureSliders();
+        setUpContextMenu();
+        checkForOlderLowRatedMovies();
     }
 
-    public TableView<Movie> getTableView() {
-        return movieTableView;
+    private void configureSliders() {
+        personalRatingSlider.setMajorTickUnit(1);
+        personalRatingSlider.setMinorTickCount(0);
+        personalRatingSlider.setSnapToTicks(true);
+        imdbRatingSlider.setMajorTickUnit(1);
+        imdbRatingSlider.setMinorTickCount(0);
+        imdbRatingSlider.setSnapToTicks(true);
     }
 
     private void configureTableView() {
@@ -72,68 +75,119 @@ public class MainPageController {
         imdbRatingColumn.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
         filePathColumn.setCellValueFactory(new PropertyValueFactory<>("filePath"));
         lastViewColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getLastView()));
-//        createdAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCreatedAt()));
-//        updatedAtColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getUpdatedAt()));
         personalRatingColumn.setCellValueFactory(new PropertyValueFactory<>("personalRating"));
         categoriesColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategories()));
     }
 
-    private void configurePagination() {
-        int totalPages = (int) Math.ceil((double) movieList.size() / ROWS_PER_PAGE);
-        pagination.setPageCount(totalPages);
-
-        pagination.setPageFactory(pageIndex -> createPage(pageIndex));
-    }
-
-    private Node createPage(int pageIndex) {
-        int start = pageIndex * ROWS_PER_PAGE;
-        int end = Math.min(start + ROWS_PER_PAGE, movieList.size());
-
-        ObservableList<Movie> currentPageData = FXCollections.observableArrayList(movieList.subList(start, end));
-        movieTableView.setItems(currentPageData);
-
-        return new AnchorPane(movieTableView);
-    }
-
-    private void loadMoviesIntoTableView() {
-        List<Movie> movies = fetchMovies();
+    private void fetchMovies() {
+        List<Movie> movies = movieManager.getAllMoviesWithCategories();
         if (movies.isEmpty()) {
             System.out.println("No movies found in the database!");
         }
 
+        movieList.clear();
         movieList.setAll(movies);
-
-        configurePagination();
+        movieTableView.setItems(movieList);
     }
 
-    private List<Movie> fetchMovies() {
-       return movieManager.getAllMoviesWithCategories();
+    public void fetchCategories() {
+        List<Category> categories = categoryManager.getAllCategories();
+
+        category.setItems(FXCollections.observableArrayList(categories));
+        category.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
+    }
+
+    private void loadMoviesIntoTable(List<Movie> movies) {
+        if (movies.isEmpty()) {
+            System.out.println("No movies found in the database!");
+        }
+
+        movieList.clear();
+        movieList.setAll(movies);
+        movieTableView.setItems(movieList);
+    }
+
+    public List<Integer> getSelectedCategoryIds() {
+        return category.getSelectionModel().getSelectedItems().stream()
+                .map(Category::getId)
+                .collect(Collectors.toList());
     }
 
     @FXML
-    private void addNewMovieScene(ActionEvent actionEvent){
+    public void filterMovies() {
+        String movieTitle = movieTitleField.getText();
+        Integer personalRating = personalRatingSlider.valueProperty().intValue();
+        Integer imdbRating = imdbRatingSlider.valueProperty().intValue();
+        List<Integer> selectedCategoryIds = getSelectedCategoryIds();
+
+        List<Movie> movies = movieManager.filterAllMoviesWithCategories(movieTitle, personalRating, imdbRating, selectedCategoryIds);
+        loadMoviesIntoTable(movies);
+    }
+
+    @FXML
+    public void resetFilters() {
+        fetchMovies();
+    }
+
+    @FXML
+    private void goToAddNewMovieScene(ActionEvent actionEvent) {
         PageManager.addMovie(actionEvent);
     }
 
     @FXML
-    private void viewAllCategoriesScene(ActionEvent actionEvent){
+    private void goToViewAllCategoriesScene(ActionEvent actionEvent) {
         PageManager.allCategories(actionEvent);
     }
 
-    @FXML
-    private void onRatingSliderChanged() {
-        MovieController movieController = new MovieController();
-        ratingSliderValue.setText(String.format("%.0f", ratingSlider.getValue()));
-        int ratingSliderNum = Integer.parseInt(ratingSliderValue.getText());
-        movieController.filterMoviesByRating(ratingSliderNum);
+    private void setUpContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem playMovieMenuItem = new MenuItem("Play");
+        MenuItem editMovieMenuItem = new MenuItem("Edit");
+        MenuItem deleteMovieMenuItem = new MenuItem("Delete");
+
+        playMovieMenuItem.setOnAction(_ -> {
+            Movie selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
+            if (selectedMovie != null) {
+                movieManager.playMovie(selectedMovie);
+            }
+        });
+
+        editMovieMenuItem.setOnAction(_ -> {
+            Movie selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
+            if (selectedMovie != null) {
+                PageManager.editMovie(selectedMovie, movieTableView);
+            }
+        });
+
+        deleteMovieMenuItem.setOnAction(_ -> {
+            Movie selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
+            if (selectedMovie != null) {
+                movieManager.deleteMovie(selectedMovie);
+                ObservableList<Movie> currentItems = movieTableView.getItems();
+                currentItems.remove(selectedMovie);
+            }
+        });
+
+        contextMenu.getItems().addAll(playMovieMenuItem, editMovieMenuItem, deleteMovieMenuItem);
+
+        movieTableView.setRowFactory(_ -> {
+            TableRow<Movie> row = new TableRow<>();
+            row.setContextMenu(contextMenu);
+            return row;
+        });
     }
 
-    @FXML
-    public void onCategorySelected(ActionEvent event) {
-
-    }
-
-    private void loadFilteredData() {
-
+    public void checkForOlderLowRatedMovies() {
+        if (!App.hasCheckedForOlderMovies() && movieManager.checkForOlderMovies()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("Reminder, you have movies with rating lower than 6 that you haven't opened in more than 2 years.");
+                alert.showAndWait();
+            });
+            App.setHasCheckedForOlderMovies(true);
+        }
     }
 }
