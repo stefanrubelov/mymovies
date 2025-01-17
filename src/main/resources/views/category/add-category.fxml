@@ -31,6 +31,7 @@
                <children>
                   <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#save" text="Save" />
                   <Button fx:id="saveAndReturnBtn" layoutX="290.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveAndReturn" text="Save and return" />
+                  <Button fx:id="saveAndReturnBtn1" layoutX="291.0" layoutY="22.0" mnemonicParsing="false" onAction="#goBack" text="Go back" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0">

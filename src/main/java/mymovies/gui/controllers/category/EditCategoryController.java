@@ -78,6 +78,10 @@ public class EditCategoryController {
 
         return false;
     }
+
+    public void goBack(ActionEvent actionEvent) {
+        PageManager.allCategories(actionEvent);
+    }
 }
 
 

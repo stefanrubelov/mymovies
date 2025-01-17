@@ -98,4 +98,9 @@ public class AddCategoryController {
         }
         return false;
     }
+
+    @FXML
+    private void goBack(ActionEvent actionEvent) {
+        PageManager.allCategories(actionEvent);
+    }
 }
