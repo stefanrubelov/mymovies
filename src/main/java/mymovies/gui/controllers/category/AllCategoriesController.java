@@ -22,13 +22,11 @@ public class AllCategoriesController {
 
     @FXML
     private TableView<Category> categoriesTableView;
-
     @FXML
     private TableColumn<Category, Integer> idColumn;
     @FXML
     private TableColumn<Category, String> nameColumn;
 
-    // This method will be called to populate the TableView
     public void initialize() {
         setUpTable();
 

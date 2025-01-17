@@ -184,6 +184,14 @@ public class MovieRepository {
                 .delete();
     }
 
+    public void rateMovie(Movie movie){
+        queryBuilder
+                .table("movies")
+                .set("personal_rating", movie.getPersonalRating())
+                .where("id", "=", movie.getId())
+                .update();
+    }
+
     public void markAsViewed(int id) {
         queryBuilder
                 .table("movies")
