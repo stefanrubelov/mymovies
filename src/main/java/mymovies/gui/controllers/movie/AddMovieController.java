@@ -3,7 +3,10 @@ package mymovies.gui.controllers.movie;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -56,6 +59,7 @@ public class AddMovieController {
         category.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
     }
 
+    @FXML
     public void save(ActionEvent actionEvent) {
         if (this.validateFields()) {
             List<Integer> selectedCategoryIds = getSelectedCategoryIds();
@@ -65,8 +69,6 @@ public class AddMovieController {
 
             Movie movie = new Movie(name, moviePath, imdbRatingValue, personalRatingValue);
             movieManager.addMovie(movie, selectedCategoryIds);
-
-            PageManager.homepage(actionEvent);
         }
     }
 
@@ -100,7 +102,7 @@ public class AddMovieController {
                 .setField("name", nameField.getText())
                 .setField("imdb rating", imdbRating.getValue())
                 .setField("file path", moviePath)
-                .required("name", "imdb rating","file path")
+                .required("name", "imdb rating", "file path")
                 .numeric("imdb rating")
                 .min("name", 3)
                 .min("imdbRating", 1)
@@ -115,7 +117,6 @@ public class AddMovieController {
             validator.getErrors().forEach((field, messages) -> {
                 messages.forEach(message -> errorMessages.append(message).append("\n"));
             });
-            System.out.println(errorMessages.toString());
             errorMessagesLbl.setText(errorMessages.toString());
         }
         return false;

@@ -72,7 +72,6 @@ public class EditCategoryController {
             validator.getErrors().forEach((field, messages) -> {
                 messages.forEach(message -> errorMessages.append(message).append("\n"));
             });
-            System.out.println(errorMessages.toString());
             errorMessageLbl.setText(errorMessages.toString());
         }
 

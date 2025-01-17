@@ -141,7 +141,6 @@ public class EditMovieController {
             validator.getErrors().forEach((field, messages) -> {
                 messages.forEach(message -> errorMessages.append(message).append("\n"));
             });
-            System.out.println(errorMessages.toString());
             errorMessagesLbl.setText(errorMessages.toString());
         }
         return false;

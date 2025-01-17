@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class QueryBuilder {
     private String selectClause = "";
@@ -29,6 +31,7 @@ public class QueryBuilder {
     private boolean insert = false;
     private final ArrayList<String> insertColumnsPlaceholders;
     private final DBConnection dbConnection;
+    final private Logger logger = Logger.getAnonymousLogger();
 
     public QueryBuilder() {
         this.dbConnection = new DBConnection();
@@ -75,7 +78,7 @@ public class QueryBuilder {
 
     public QueryBuilder whereIn(String column, List<Integer> values) {
         if (values == null || values.isEmpty()) {
-           // log
+            // log
         } else {
             String placeholders = String.join(", ", Collections.nCopies(values.size(), "?"));
             whereClauses.add(column + " IN (" + placeholders + ")");
@@ -275,8 +278,8 @@ public class QueryBuilder {
             }
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("SQL INSERT Execution Error: " + e.getMessage());
             e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
             return false;
         } finally {
             resetFields();
@@ -299,8 +302,6 @@ public class QueryBuilder {
                 .append("VALUES (").append(String.join(", ", Collections.nCopies(parameters.size(), "?"))).append("); ")
                 .append("SELECT SCOPE_IDENTITY() AS id;");
 
-        System.out.println(sql);
-
         try {
             Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
@@ -311,8 +312,8 @@ public class QueryBuilder {
 
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
-            System.err.println("SQL INSERT Execution Error with SCOPE_IDENTITY(): " + e.getMessage());
             e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } finally {
             resetFields();
@@ -336,8 +337,8 @@ public class QueryBuilder {
             }
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
-            System.err.println("SQL SELECT Execution Error: " + e.getMessage());
             e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } finally {
             resetFields();
@@ -362,8 +363,8 @@ public class QueryBuilder {
             }
             return preparedStatement.execute();
         } catch (SQLException e) {
-            System.err.println("SQL UPDATE Execution Error: " + e.getMessage());
             e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
             return false;
         } finally {
             resetFields();
@@ -387,8 +388,8 @@ public class QueryBuilder {
             }
             return preparedStatement.execute();
         } catch (SQLException e) {
-            System.err.println("SQL DELETE Execution Error: " + e.getMessage());
             e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
             return false;
         } finally {
             resetFields();
