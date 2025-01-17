@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.controllers.category.AddCategoryController">
+   <children>
+      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Add new category">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="260.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="62.0" text="Name: " />
+                  <TextField fx:id="categoryNameInput" alignment="CENTER" promptText="Enter the category name" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="20.0">
+               <children>
+                  <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#save" text="Save" />
+                  <Button fx:id="saveAndReturnBtn" layoutX="290.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveAndReturn" text="Save and return" />
+                  <Button fx:id="saveAndReturnBtn1" layoutX="291.0" layoutY="22.0" mnemonicParsing="false" onAction="#goBack" text="Go back" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0">
+               <children>
+                  <Label fx:id="errorMessageLbl" textFill="#ff1f1f" />
+                  <Label fx:id="successMessageLbl" layoutX="310.0" layoutY="16.0" textFill="#51ff00" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

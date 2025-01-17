@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Integer?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.controllers.movie.AddMovieController">
+    <VBox fx:id="vboxContainer" alignment="TOP_LEFT" prefHeight="600.0" prefWidth="300" spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="54.0" prefWidth="600.0">
+            <children>
+                <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Add a new movie">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="600.0" spacing="10">
+            <Label text="Name:" />
+            <TextField fx:id="nameField" prefHeight="26.0" prefWidth="450.0" promptText="Enter movie name" />
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+            <padding>
+                <Insets left="30.0" />
+            </padding>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="10">
+            <Label text="Personal Rating:" />
+            <ComboBox fx:id="personalRating" promptText="1-10">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <Integer fx:value="1" />
+                        <Integer fx:value="2" />
+                        <Integer fx:value="3" />
+                        <Integer fx:value="4" />
+                        <Integer fx:value="5" />
+                        <Integer fx:value="6" />
+                        <Integer fx:value="7" />
+                        <Integer fx:value="8" />
+                        <Integer fx:value="9" />
+                        <Integer fx:value="10" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <padding>
+                <Insets left="30.0" />
+            </padding>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="10">
+            <Label text="IMDb Rating:" />
+            <ComboBox fx:id="imdbRating" promptText="1-10">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <Integer fx:value="1" />
+                        <Integer fx:value="2" />
+                        <Integer fx:value="3" />
+                        <Integer fx:value="4" />
+                        <Integer fx:value="5" />
+                        <Integer fx:value="6" />
+                        <Integer fx:value="7" />
+                        <Integer fx:value="8" />
+                        <Integer fx:value="9" />
+                        <Integer fx:value="10" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <padding>
+                <Insets left="30.0" />
+            </padding>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" prefHeight="175.0" prefWidth="600.0" spacing="10">
+            <Label text="Category:" />
+         <VBox prefHeight="23.0" prefWidth="300.0">
+            <children>
+                  <ListView fx:id="category" maxHeight="-Infinity" prefHeight="150.0" prefWidth="300.0" />
+               <Label text="Tip: hold ctrl to select multiple categories">
+                  <font>
+                     <Font name="System Italic" size="12.0" />
+                  </font>
+               </Label>
+            </children>
+         </VBox>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets left="30.0" />
+         </padding>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="600.0" spacing="10">
+            <Label text="File:" />
+            <Button onAction="#selectFile" text="Choose a file" />
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+            <padding>
+                <Insets left="30.0" />
+            </padding>
+        </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="94.0" prefWidth="600.0" spacing="10">
+         <padding>
+            <Insets left="30.0" />
+         </padding>
+         <children>
+            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="59.0" prefWidth="550.0">
+               <children>
+                  <Label fx:id="pathLbl" />
+                  <Label fx:id="errorMessagesLbl" layoutX="10.0" layoutY="10.0" textFill="RED" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="600.0" spacing="20.0">
+            <children>
+                <Button alignment="CENTER" maxWidth="100.0" onAction="#save" text="Save" />
+                <Button alignment="CENTER" layoutX="290.0" layoutY="20.0" maxWidth="100.0" onAction="#goBack" text="Go back" />
+            </children>
+        </HBox>
+    </VBox>
+</AnchorPane>
