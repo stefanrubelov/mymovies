@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import mymovies.App;
 import mymovies.be.Category;
 import mymovies.be.Movie;
@@ -17,9 +18,10 @@ import mymovies.gui.PageManager;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MainPageController {
+public class HomepageController {
     private final MovieManager movieManager = new MovieManager();
     private final CategoryManager categoryManager = new CategoryManager();
 
@@ -143,6 +145,7 @@ public class MainPageController {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem playMovieMenuItem = new MenuItem("Play");
+        MenuItem rateMovieMenuItem = new MenuItem("Rate movie");
         MenuItem editMovieMenuItem = new MenuItem("Edit");
         MenuItem deleteMovieMenuItem = new MenuItem("Delete");
 
@@ -150,6 +153,14 @@ public class MainPageController {
             Movie selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
             if (selectedMovie != null) {
                 movieManager.playMovie(selectedMovie);
+                fetchMovies();
+            }
+        });
+
+        rateMovieMenuItem.setOnAction(_ -> {
+            Movie selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
+            if (selectedMovie != null) {
+                showRatingDialog(selectedMovie);
             }
         });
 
@@ -169,7 +180,7 @@ public class MainPageController {
             }
         });
 
-        contextMenu.getItems().addAll(playMovieMenuItem, editMovieMenuItem, deleteMovieMenuItem);
+        contextMenu.getItems().addAll(playMovieMenuItem, rateMovieMenuItem, editMovieMenuItem, deleteMovieMenuItem);
 
         movieTableView.setRowFactory(_ -> {
             TableRow<Movie> row = new TableRow<>();
@@ -179,15 +190,51 @@ public class MainPageController {
     }
 
     public void checkForOlderLowRatedMovies() {
-        if (!App.hasCheckedForOlderMovies() && movieManager.checkForOlderMovies()) {
+        if (!App.hasCheckedForOlderMovies() && movieManager.checkForLowRatedOlderMovies()) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
+                alert.setTitle("Reminder");
                 alert.setHeaderText(null);
-                alert.setContentText("Reminder, you have movies with rating lower than 6 that you haven't opened in more than 2 years.");
+                alert.setContentText("You have movies with rating lower than 6 that you haven't opened in more than 2 years.");
                 alert.showAndWait();
             });
             App.setHasCheckedForOlderMovies(true);
         }
+    }
+
+    public void showRatingDialog(Movie movie) {
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle("Change Rating");
+
+        VBox content = new VBox();
+        content.setSpacing(10);
+        Label label = new Label("Select a new rating:");
+
+        ComboBox<Integer> ratingComboBox = new ComboBox<>();
+        ratingComboBox.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        if (movie.getPersonalRating() != null) {
+            ratingComboBox.setValue(movie.getPersonalRating());
+        }
+
+        content.getChildren().addAll(label, ratingComboBox);
+        dialog.getDialogPane().setContent(content);
+
+        ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        dialog.setResultConverter(button -> {
+            if (button == confirmButton) {
+                return ratingComboBox.getValue();
+            }
+            return null;
+        });
+
+        Optional<Integer> result = dialog.showAndWait();
+        result.ifPresent(newRating -> {
+            movieManager.rateMovie(movie.getId(), newRating);
+            fetchMovies();
+        });
     }
 }

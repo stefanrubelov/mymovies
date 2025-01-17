@@ -42,8 +42,14 @@ public class MovieManager {
         movieRepository.delete(movie.getId());
     }
 
-    public boolean checkForOlderMovies() {
+    public boolean checkForLowRatedOlderMovies() {
         return !movieRepository.getLowRatedOlderMovies().isEmpty();
+    }
+
+    public void rateMovie(int id, int rating){
+        Movie movie = new Movie(id);
+        movie.setPersonalRating(rating);
+        movieRepository.rateMovie(movie);
     }
 
     public void attachCategoriesToMovie(Movie movie, List<Integer> categoryIds) {
@@ -84,6 +90,8 @@ public class MovieManager {
             } catch (IOException e) {
                 System.out.println("An error occurred while trying to open the file: " + e.getMessage());
                 logger.log(Level.SEVERE, e.getMessage(), e);
+            } finally {
+                markAsViewed(movie);
             }
         } else {
             System.out.println("Desktop is not supported on this platform.");

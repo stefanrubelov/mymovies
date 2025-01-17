@@ -13,10 +13,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="550.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.controllers.MainPageController">
+<AnchorPane prefHeight="550.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymovies.gui.controllers.HomepageController">
     <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="550.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
-            <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="1280.0">
+            <HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="1280.0">
                 <children>
                     <!-- Title Label -->
                     <Label text="My movies collection">
@@ -56,18 +56,18 @@
                     <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="250.0">
                         <children>
                             <TextField fx:id="movieTitleField" promptText="Movie title" />
-                            <Label text="Personal ratings">
-                                <VBox.margin>
-                                    <Insets top="20.0" />
-                                </VBox.margin>
-                            </Label>
-                            <Slider fx:id="personalRatingSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="1.0" />
                             <Label text="IMDB Ratings">
                                 <VBox.margin>
                                     <Insets top="20.0" />
                                 </VBox.margin>
                             </Label>
                             <Slider fx:id="imdbRatingSlider" blockIncrement="1.0" layoutX="10.0" layoutY="10.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="1.0" />
+                            <Label text="Personal ratings">
+                                <VBox.margin>
+                                    <Insets top="20.0" />
+                                </VBox.margin>
+                            </Label>
+                            <Slider fx:id="personalRatingSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="1.0" />
                             <ListView fx:id="category">
                                 <VBox.margin>
                                     <Insets top="15.0" />
@@ -83,6 +83,9 @@
                                   <Button fx:id="filterMoviesBtn" mnemonicParsing="false" onAction="#filterMovies" text="Filter" />
                            <Button mnemonicParsing="false" onAction="#resetFilters" text="Reset filters" />
                         </children>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
                      </HBox>
                         </children>
                     </VBox>
@@ -103,4 +106,7 @@
             </HBox>
         </children>
     </VBox>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
 </AnchorPane>
