@@ -118,11 +118,11 @@ public class HomepageController {
     @FXML
     public void filterMovies() {
         String movieTitle = movieTitleField.getText();
-        Integer personalRating = personalRatingSlider.valueProperty().intValue();
         Integer imdbRating = imdbRatingSlider.valueProperty().intValue();
+        Integer personalRating = personalRatingSlider.valueProperty().intValue();
         List<Integer> selectedCategoryIds = getSelectedCategoryIds();
 
-        List<Movie> movies = movieManager.filterAllMoviesWithCategories(movieTitle, personalRating, imdbRating, selectedCategoryIds);
+        List<Movie> movies = movieManager.filterAllMoviesWithCategories(movieTitle, imdbRating, personalRating, selectedCategoryIds);
         loadMoviesIntoTable(movies);
     }
 
